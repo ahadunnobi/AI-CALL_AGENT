@@ -1,0 +1,22 @@
+{
+  "name": "ai-call-agent-phone",
+  "version": "1.0.0",
+  "description": "SIP telephony layer for the AI Call Agent",
+  "main": "sip_handler.js",
+  "scripts": {
+    "start": "node sip_handler.js",
+    "dev": "nodemon sip_handler.js"
+  },
+  "dependencies": {
+    "axios": "^1.6.8",
+    "dotenv": "^16.4.5",
+    "sip.js": "^0.21.2",
+    "ws": "^8.17.0"
+  },
+  "devDependencies": {
+    "nodemon": "^3.1.0"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

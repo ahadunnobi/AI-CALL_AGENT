@@ -1,0 +1,37 @@
+# ─────────────────────────────────────────────────────────────────────────────
+#  AI-CALL_AGENT — Python Dependencies
+#  Install with: pip install -r requirements.txt
+# ─────────────────────────────────────────────────────────────────────────────
+
+# Web server (FastAPI bridge between Node.js SIP layer and Python AI modules)
+fastapi>=0.110.0
+uvicorn[standard]>=0.29.0
+
+# HTTP client (for Ollama LLM calls)
+requests>=2.31.0
+
+# Environment variable loading
+python-dotenv>=1.0.0
+
+# ── Speech-to-Text ────────────────────────────────────────────────────────────
+# Vosk — fully offline, fast (~50MB model)
+vosk>=0.3.45
+pyaudio>=0.2.14
+
+# OpenAI Whisper — higher accuracy, larger model (~140MB+ for 'base')
+# Uncomment below if you set STT_ENGINE=whisper in .env
+# openai-whisper>=20231117
+# torch>=2.0.0
+
+# ── Text-to-Speech ────────────────────────────────────────────────────────────
+# pyttsx3 — simple offline TTS, no download needed
+pyttsx3>=2.90
+
+# Coqui TTS — voice cloning support (large install, ~500MB)
+# Uncomment below if you set TTS_ENGINE=coqui in .env
+# TTS>=0.22.0
+
+# ── Utilities ─────────────────────────────────────────────────────────────────
+# Audio file handling
+soundfile>=0.12.1
+numpy>=1.26.0
