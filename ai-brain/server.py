@@ -19,7 +19,7 @@ from pydantic import BaseModel
 from typing import Optional
 
 from config import cfg
-from logger import get_logger
+from logger import get_logger, log_queue
 from call_processor import CallProcessor, audio_to_b64, b64_to_audio
 
 log = get_logger(__name__)
@@ -59,7 +59,7 @@ app = FastAPI(
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000"],
+    allow_origins=["http://localhost:3000", "http://127.0.0.1:3000", "http://localhost:5173", "http://127.0.0.1:5173"],
     allow_methods=["*"],
     allow_headers=["*"],
 )
@@ -139,6 +139,32 @@ async def end_call(req: EndCallRequest):
         log.info("Session ended for %s", req.phone)
         return {"status": "ended", "phone": req.phone}
     return {"status": "not_found", "phone": req.phone}
+
+
+@app.get("/logs")
+async def stream_logs():
+    """Server-Sent Events endpoint to stream logs to the dashboard."""
+    from fastapi.responses import StreamingResponse
+    import asyncio
+
+    async def log_generator():
+        # First, send existing logs in the queue
+        while not log_queue.empty():
+            yield f"data: {log_queue.get_nowait()}\n\n"
+
+        # Then, wait for new logs
+        while True:
+            try:
+                # We check the queue every 100ms
+                if not log_queue.empty():
+                    msg = log_queue.get_nowait()
+                    yield f"data: {msg}\n\n"
+                else:
+                    await asyncio.sleep(0.1)
+            except Exception:
+                break
+
+    return StreamingResponse(log_generator(), media_type="text/event-stream")
 
 
 # ── Entry point ───────────────────────────────────────────────────────────────
