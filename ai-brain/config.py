@@ -33,6 +33,10 @@ class Config:
     )
     PYTTSX3_RATE: int = int(os.getenv("PYTTSX3_RATE", "160"))
 
+    # ── ElevenLabs ────────────────────────────────────────────────────────
+    ELEVENLABS_API_KEY: str = os.getenv("ELEVENLABS_API_KEY", "")
+    ELEVENLABS_VOICE_ID: str = os.getenv("ELEVENLABS_VOICE_ID", "pNInz6obpg8nEByWQX7d")  # Default "Adam"
+
     # ── Database ──────────────────────────────────────────────────────────
     DB_PATH: str = os.getenv("DB_PATH", str(_REPO_ROOT / "memory" / "caller_memory.db"))
 

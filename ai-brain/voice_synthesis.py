@@ -153,6 +153,60 @@ class CoquiTTS(BaseTTS):
         return wav_bytes
 
 
+# ─────────────────────────────── ElevenLabsTTS ────────────────────────────────
+
+class ElevenLabsTTS(BaseTTS):
+    """
+    High-quality cloud TTS using ElevenLabs API.
+    Requires ELEVENLABS_API_KEY in .env.
+    """
+
+    def __init__(self) -> None:
+        self._api_key = cfg.ELEVENLABS_API_KEY
+        self._voice_id = cfg.ELEVENLABS_VOICE_ID
+        if not self._api_key:
+            log.warning("ElevenLabs: API key missing — falling back to offline TTS.")
+            raise ValueError("ELEVENLABS_API_KEY not set.")
+        log.info("ElevenLabsTTS initialised (voice_id=%s)", self._voice_id)
+
+    def synthesize(self, text: str) -> bytes:
+        import requests
+        url = f"https://api.elevenlabs.io/v1/text-to-speech/{self._voice_id}"
+        headers = {
+            "Accept": "audio/mpeg",
+            "Content-Type": "application/json",
+            "xi-api-key": self._api_key,
+        }
+        data = {
+            "text": text,
+            "model_id": "eleven_monolingual_v1",
+            "voice_settings": {"stability": 0.5, "similarity_boost": 0.5},
+        }
+        response = requests.post(url, json=data, headers=headers)
+        if response.status_code != 200:
+            log.error("ElevenLabs error %d: %s", response.status_code, response.text)
+            raise RuntimeError(f"ElevenLabs synthesis failed: {response.text}")
+
+        # ElevenLabs returns MP3 by default. We should ideally return WAV for consistency,
+        # but the SIP handler might handle MP3 or we can convert it. 
+        # For now, let's return the bytes. If it's MP3, we might need to convert to WAV.
+        # Most of our pipeline expects WAV.
+        
+        mp3_bytes = response.content
+        return self._mp3_to_wav(mp3_bytes)
+
+    def _mp3_to_wav(self, mp3_bytes: bytes) -> bytes:
+        """Convert MP3 bytes to WAV bytes using pydub or similar."""
+        try:
+            from pydub import AudioSegment
+            audio = AudioSegment.from_file(io.BytesIO(mp3_bytes), format="mp3")
+            wav_io = io.BytesIO()
+            audio.export(wav_io, format="wav")
+            return wav_io.getvalue()
+        except ImportError:
+            log.warning("pydub not installed, returning raw MP3 (might cause issues).")
+            return mp3_bytes
+
 # ─────────────────────────────── Factory ──────────────────────────────────────
 
 def create_tts() -> BaseTTS:
@@ -162,8 +216,14 @@ def create_tts() -> BaseTTS:
         return Pyttsx3TTS()
     elif engine == "coqui":
         return CoquiTTS()
+    elif engine == "elevenlabs":
+        try:
+            return ElevenLabsTTS()
+        except Exception as e:
+            log.error("Failed to init ElevenLabsTTS: %s. Falling back to pyttsx3.", e)
+            return Pyttsx3TTS()
     else:
-        raise ValueError(f"Unknown TTS_ENGINE: {engine!r}. Choose 'pyttsx3' or 'coqui'.")
+        raise ValueError(f"Unknown TTS_ENGINE: {engine!r}. Choose 'pyttsx3', 'coqui', or 'elevenlabs'.")
 
 
 # ─────────────────────────────── Helpers ──────────────────────────────────────
