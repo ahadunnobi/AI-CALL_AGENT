@@ -155,6 +155,21 @@ Write-Host "  SIP handler starting (PID: $($NodeProc.Id))…" -ForegroundColor D
 Start-Sleep 3
 Write-Host "  SIP handler running ✓" -ForegroundColor Green
 
+# ─── Start Web Dashboard (Vite) ───────────────────────────────────────────────
+
+Write-Banner "Starting Web Dashboard (React/Vite)" "Cyan"
+$ViteLog = Join-Path $LogDir "web_dashboard.log"
+$ViteProc = Start-Process -NoNewWindow -PassThru `
+    -FilePath "npm.cmd" `
+    -ArgumentList @("run", "dev") `
+    -WorkingDirectory (Join-Path $ProjectRoot "frontend") `
+    -RedirectStandardOutput $ViteLog `
+    -RedirectStandardError (Join-Path $LogDir "web_dashboard_err.log")
+
+Write-Host "  Web dashboard starting (PID: $($ViteProc.Id))…" -ForegroundColor DarkGray
+Start-Sleep 3
+Write-Host "  Web dashboard running ✓  (http://localhost:5173)" -ForegroundColor Green
+
 # ─── Summary ──────────────────────────────────────────────────────────────────
 
 Write-Banner "All Services Running!" "Green"
@@ -163,9 +178,11 @@ Write-Host "  ──────────────────┼───
 Write-Host "  Ollama LLM        │  http://localhost:11434" -ForegroundColor White
 Write-Host "  Python AI Bridge  │  http://localhost:8000" -ForegroundColor White
 Write-Host "  SIP Handler       │  Running (logs\sip_handler.log)" -ForegroundColor White
+Write-Host "  Web Dashboard     │  http://localhost:5173" -ForegroundColor White
 Write-Host ""
 Write-Host "  Logs directory: $LogDir" -ForegroundColor DarkGray
 Write-Host "  API Docs:        http://localhost:8000/docs" -ForegroundColor DarkGray
+Write-Host "  Dashboard:       http://localhost:5173" -ForegroundColor DarkGray
 Write-Host ""
 Write-Host "  Press Ctrl+C to stop all services." -ForegroundColor Yellow
 
@@ -176,5 +193,6 @@ try {
     Write-Host "`nShutting down…" -ForegroundColor Yellow
     Stop-Process -Id $PythonProc.Id -ErrorAction SilentlyContinue
     Stop-Process -Id $NodeProc.Id  -ErrorAction SilentlyContinue
+    Stop-Process -Id $ViteProc.Id  -ErrorAction SilentlyContinue
     Write-Host "Goodbye!" -ForegroundColor Cyan
 }
