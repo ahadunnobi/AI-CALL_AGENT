@@ -1,0 +1,7 @@
+17:28:01  INFO    [SIP] Checking Python AI bridge…
+17:28:01  INFO    [SIP] Python AI bridge OK ✓
+17:28:01  WARNING [SIP] SIP credentials not configured. Set SIP_URI, SIP_PASSWORD, SIP_REGISTRAR in .env.
+Running in DEMO mode — incoming SIP calls will not be received.
+17:28:01  INFO    [SIP] === DEMO MODE ===
+17:28:01  INFO    [SIP] Starting a simulated call session…
+17:28:02  ERROR   [SIP] Fatal error: Request failed with status code 500
