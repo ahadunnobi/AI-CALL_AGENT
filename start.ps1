@@ -76,7 +76,7 @@ if (-not $SkipOllama) {
     if (Check-Command "ollama") {
         try {
             # Try health check
-            $ok = Invoke-RestMethod -Uri "http://localhost:11434/" -TimeoutSec 1 -ErrorAction Stop
+            Invoke-RestMethod -Uri "http://localhost:11434/" -TimeoutSec 1 -ErrorAction Stop | Out-Null
             Write-Host "  Ollama OK."
         } catch {
             Write-Host "  Starting Ollama..."
@@ -86,6 +86,14 @@ if (-not $SkipOllama) {
     } else {
         Write-Host "  WARNING: Ollama not found."
     }
+}
+
+# --- Model Verification ---
+$ModelPath = Join-Path $ProjectRoot "ai-brain\models\vosk-model-small-en-us-0.15"
+if (-not (Test-Path $ModelPath)) {
+    Write-Host "ERROR: Vosk model not found at $ModelPath" -ForegroundColor Red
+    Write-Host "  Please download from https://alphacephei.com/vosk/models and extract to ai-brain\models\" -ForegroundColor Yellow
+    exit 1
 }
 
 Write-Host "--- Launching Services ---"

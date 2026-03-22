@@ -15,9 +15,9 @@ python-dotenv>=1.0.0
 
 # ── Speech-to-Text ────────────────────────────────────────────────────────────
 # Vosk — fully offline, fast (~50MB model)
-vosk>=0.3.45
-pyaudio>=0.2.14
-
+vosk>=0.3.50
+# pyaudio>=0.2.14  (Removed for compatibility - not needed for backend bridge)
+srt>=3.5.3
 # OpenAI Whisper — higher accuracy, larger model (~140MB+ for 'base')
 # Uncomment below if you set STT_ENGINE=whisper in .env
 # openai-whisper>=20231117
