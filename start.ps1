@@ -1,4 +1,4 @@
-# start.ps1 - Startup Script
+# start.ps1 - Startup Script for AI Call Agent
 
 param(
     [switch]$SkipOllama,
@@ -40,16 +40,16 @@ if (-not (Test-Path $EnvFile)) {
     Copy-Item (Join-Path $ProjectRoot ".env.example") $EnvFile
 }
 
-Write-Host "[1/4] Checking Python deps..."
+Write-Host "[1/4] Checking Python dependencies..."
 $PipList = & $PythonCmd -m pip list
 if ($PipList -notmatch "fastapi") {
-    Write-Host "  Installing..."
+    Write-Host "  Installing packages..."
     & $PythonCmd -m pip install -r (Join-Path $ProjectRoot "ai-brain\requirements.txt") --quiet
 } else {
-    Write-Host "  Python deps OK."
+    Write-Host "  Python dependencies OK."
 }
 
-Write-Host "[2/4] Checking Node deps..."
+Write-Host "[2/4] Checking SIP Handler dependencies..."
 $SipModules = Join-Path $ProjectRoot "phone-system\node_modules"
 if (-not (Test-Path $SipModules)) {
     Write-Host "  Installing Node.js packages..."
@@ -60,7 +60,7 @@ if (-not (Test-Path $SipModules)) {
     Write-Host "  SIP Handler packages OK."
 }
 
-Write-Host "[3/4] Checking Dashboard deps..."
+Write-Host "[3/4] Checking Web Dashboard dependencies..."
 $WebModules = Join-Path $ProjectRoot "frontend\node_modules"
 if (-not (Test-Path $WebModules)) {
     Write-Host "  Installing Dashboard packages..."
@@ -72,32 +72,31 @@ if (-not (Test-Path $WebModules)) {
 }
 
 if (-not $SkipOllama) {
-    Write-Host "[4/4] Starting Ollama..."
+    Write-Host "[4/4] Checking Ollama..."
     if (Check-Command "ollama") {
         try {
-            # Try health check
             Invoke-RestMethod -Uri "http://localhost:11434/" -TimeoutSec 1 -ErrorAction Stop | Out-Null
-            Write-Host "  Ollama OK."
+            Write-Host "  Ollama already running OK."
         } catch {
-            Write-Host "  Starting Ollama..."
-            Start-Process -NoNewWindow -FilePath "ollama" -ArgumentList "serve"
+            Write-Host "  Starting Ollama service..."
+            Start-Process -FilePath "ollama" -ArgumentList "serve" -WindowStyle Hidden
             Start-Sleep 5
         }
     } else {
-        Write-Host "  WARNING: Ollama not found."
+        Write-Host "  WARNING: Ollama not found in PATH."
     }
-}
-
-# --- Model Verification ---
-$ModelPath = Join-Path $ProjectRoot "ai-brain\models\vosk-model-small-en-us-0.15"
-if (-not (Test-Path $ModelPath)) {
-    Write-Host "ERROR: Vosk model not found at $ModelPath" -ForegroundColor Red
-    Write-Host "  Please download from https://alphacephei.com/vosk/models and extract to ai-brain\models\" -ForegroundColor Yellow
-    exit 1
 }
 
 Write-Host "--- Launching Services ---"
 
+# --- Model Verification ---
+$ModelPath = "c:\projects\AI-CALL_AGENT\ai-brain\models\vosk-model-small-en-us-0.15"
+if (-not (Test-Path $ModelPath)) {
+    Write-Host "ERROR: Vosk model not found at $ModelPath"
+    exit 1
+}
+
+# 1. AI Bridge
 $PythonProc = Start-Process -NoNewWindow -PassThru `
     -FilePath $PythonCmd `
     -ArgumentList @("-m", "uvicorn", "server:app", "--host", "127.0.0.1", "--port", "8000") `
@@ -105,8 +104,25 @@ $PythonProc = Start-Process -NoNewWindow -PassThru `
     -RedirectStandardOutput (Join-Path $LogDir "python_server.log") `
     -RedirectStandardError (Join-Path $LogDir "python_server_err.log")
 
-Write-Host "  AI Bridge: http://localhost:8000"
+Write-Host "  AI Bridge starting (PID: $($PythonProc.Id))..."
 
+# Wait for Ready
+Write-Host "  Waiting for AI models to load (can take 20s)..."
+$Count = 0
+while ($Count -lt 30) {
+    try {
+        $resp = Invoke-RestMethod -Uri "http://127.0.0.1:8000/health" -TimeoutSec 2 -ErrorAction Stop
+        if ($resp.status -eq "ok") {
+            Write-Host "  AI Bridge is ONLINE!"
+            break
+        }
+    } catch {
+        $Count++
+        Start-Sleep 1
+    }
+}
+
+# 2. SIP Handler
 $NodeProc = Start-Process -NoNewWindow -PassThru `
     -FilePath "node" `
     -ArgumentList @("sip_handler.js") `
@@ -114,8 +130,9 @@ $NodeProc = Start-Process -NoNewWindow -PassThru `
     -RedirectStandardOutput (Join-Path $LogDir "sip_handler.log") `
     -RedirectStandardError (Join-Path $LogDir "sip_handler_err.log")
 
-Write-Host "  SIP Handler running"
+Write-Host "  SIP Handler running (PID: $($NodeProc.Id))"
 
+# 3. Web Dashboard
 $ViteProc = Start-Process -NoNewWindow -PassThru `
     -FilePath "cmd" `
     -ArgumentList "/c", "npm run dev" `
@@ -123,17 +140,18 @@ $ViteProc = Start-Process -NoNewWindow -PassThru `
     -RedirectStandardOutput (Join-Path $LogDir "web_dashboard.log") `
     -RedirectStandardError (Join-Path $LogDir "web_dashboard_err.log")
 
-Write-Host "  Dashboard: http://localhost:5173"
-Write-Host "--- All Services Online ---"
-Write-Host "Press Ctrl+C to exit."
+Write-Host "  Web Dashboard: http://localhost:5173"
+Write-Host "--- System Online ---"
+Write-Host "Press Ctrl+C to stop all services."
 
 try {
     Wait-Process -Id $PythonProc.Id
 } catch {
-    # Exit on interrupt
+    # Finished
 } finally {
     Write-Host "Shutting down..."
     Stop-Process -Id $PythonProc.Id -ErrorAction SilentlyContinue
-    Stop-Process -Id $NodeProc.Id -ErrorAction SilentlyContinue
-    Stop-Process -Id $ViteProc.Id -ErrorAction SilentlyContinue
+    Stop-Process -Id $NodeProc.Id  -ErrorAction SilentlyContinue
+    Stop-Process -Id $ViteProc.Id  -ErrorAction SilentlyContinue
+    Write-Host "Goodbye!"
 }
