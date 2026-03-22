@@ -78,10 +78,22 @@ if (-not (Test-Path $NodeModules)) {
     Write-Host "  Node.js packages already installed ✓" -ForegroundColor Green
 }
 
+Write-Host "[3/4] Checking Web Dashboard dependencies…" -ForegroundColor DarkCyan
+$WebModules = Join-Path $ProjectRoot "frontend\node_modules"
+if (-not (Test-Path $WebModules)) {
+    Write-Host "  Installing Web Dashboard packages…" -ForegroundColor Yellow
+    Push-Location (Join-Path $ProjectRoot "frontend")
+    & npm install --silent
+    Pop-Location
+    Write-Host "  Web Dashboard packages installed ✓" -ForegroundColor Green
+} else {
+    Write-Host "  Web Dashboard packages already installed ✓" -ForegroundColor Green
+}
+
 # ─── Start Ollama ─────────────────────────────────────────────────────────────
 
 if (-not $SkipOllama) {
-    Write-Host "[3/3] Starting Ollama…" -ForegroundColor DarkCyan
+    Write-Host "[4/4] Starting Ollama…" -ForegroundColor DarkCyan
     if (Check-Command "ollama") {
         # Check if already running
         try {
@@ -182,7 +194,7 @@ Write-Host "  Web Dashboard     │  http://localhost:5173" -ForegroundColor Whi
 Write-Host ""
 Write-Host "  Logs directory: $LogDir" -ForegroundColor DarkGray
 Write-Host "  API Docs:        http://localhost:8000/docs" -ForegroundColor DarkGray
-Write-Host "  Dashboard:       http://localhost:5173" -ForegroundColor DarkGray
+Write-Host "  Dashboard:       http://localhost:5173" -ForegroundColor Green
 Write-Host ""
 Write-Host "  Press Ctrl+C to stop all services." -ForegroundColor Yellow
 
