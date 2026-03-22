@@ -9,91 +9,69 @@ A state-of-the-art, private AI phone agent that runs entirely on your laptop. It
 
 ---
 
-## 🧠 What is "The Brain"?
-The "Brain" is the intelligence hub of the project, located in the `/ai-brain` directory. It is a **Python FastAPI server** that coordinates four critical components:
-
-1.  **Speech-to-Text (STT)**: Uses **Vosk** (offline) to turn the caller's voice into text in milliseconds. 
-2.  **LLM (Mistral)**: The reasoning engine. It uses **Ollama** to process the conversation history and decide what to say next based on your personal "Assistant Persona".
-3.  **Memory (SQLite)**: A local database that recognizes returning callers by their phone number and remembers previous interactions.
-4.  **Voice Synthesis (TTS)**: Uses **pyttsx3** (basic) or **Coqui XTTS-v2** (advanced voice cloning) to generate the agent's response audio.
+## 🧠 Core Architecture
+- **AI Brain (Python)**: Handles Speech-to-Text (Vosk/Whisper), Memory (SQLite), and LLM Reasoning (Ollama).
+- **Telephony (Node.js)**: Manages SIP registration and real-time audio streaming.
+- **Dashboard (React)**: Live-stream of agent logs and system activity.
 
 ---
 
-## 🖥️ What's Happening in the Frontend?
-The frontend is a **Vite + React Dashboard** located in `/frontend`. 
-- **Live Stream**: It connects to a **Server-Sent Events (SSE)** log stream from the Python backend.
-- **Visual Feedback**: You can see "Live Agent Activity"—exactly what the agent is hearing, what it's thinking, and what it's saying in real-time.
-- **Remote Control**: It provides quick links to the API documentation (`/docs`) to manually trigger actions.
+## 🚀 How to Run (Step-by-Step)
+
+### **Step 1: Start All Services on Your Laptop**
+Open a terminal (PowerShell) and run this single command to launch everything:
+```powershell
+powershell -ExecutionPolicy Bypass -File start.ps1
+```
+*Wait ~20 seconds for the AI models to load. The dashboard will launch automatically.*
+
+### **Step 2: Access the Web Dashboard**
+To see the **Live Agent Stream** and logs on your website UI, open:
+👉 **[http://localhost:5173](http://localhost:5173)**
 
 ---
 
-## 📞 What's Happening in the Backend?
-There are two "backends" working together:
+## 📱 How to Connect Your Mobile Phone
 
-1.  **Telephony Layer (Node.js)**: Located in `/phone-system`. It uses **SIP.js** to talk to the phone network. It handles the "ringing", "answering", and "audio streaming". It pipes the caller's audio to the...
-2.  **AI Bridge (FastAPI)**: The Python server that runs the "Brain" logic. It receives audio chunks, processes them through the STT → LLM → TTS pipeline, and returns the response audio to Node.js to be played back to the caller.
+### **Option A: The Local Test (No Account Needed)**
+1.  Run `start.ps1` as shown above.
+2.  Open the Dashboard UI.
+3.  The system will run in **Demo Mode** — you will see a simulated call start and process on the screen.
 
----
-
-## 🛠️ Technology Stack
-| Layer | Tech | Why? |
-|-------|------|------|
-| **Telephony** | Node.js + SIP.js | High-performance handling of VoIP protocols. |
-| **Logic Server**| Python + FastAPI | Fast, modern API for AI model integration. |
-| **STT** | Vosk | Fully offline, extremely fast on CPU. |
-| **LLM** | Ollama (Mistral) | Industry standard for local high-quality AI. |
-| **TTS** | Coqui XTTS-v2 | Professional voice cloning for a premium feel. |
-| **Database** | SQLite | Lightweight, file-based, no setup required. |
-| **UI** | React + Framer Motion | Fluid, modern dashboard with live animations. |
+### **Option B: Real Phone Integration (Using SIP)**
+1.  **Get a SIP Account**: Register at [linphone.org](https://www.linphone.org/freesip) (Free) or [voip.ms](https://voip.ms).
+2.  **Configure `.env`**: Put your account details (URI, Password, Registrar) in your `.env` file.
+3.  **Install App on Phone**: Download the **Linphone** app from the App Store or Google Play.
+4.  **Register the App**: Log in to the app with the **same** SIP account.
+5.  **Call the Agent**: Dial your SIP address from another phone to reach the agent. It will answer and you'll see it live in your Dashboard!
 
 ---
 
-## 🚀 How to Execute (The "One-Click" Way)
+## 💻 Technical Reference: Individual Shell Commands
+If you prefer to run the components manually in separate terminals:
 
-### 1. Prerequisites
-- **Python 3.10+**
-- **Node.js 18+**
-- **Ollama** (Download and run `ollama pull mistral`)
-- **Vosk Model**: Download one from [alphacephei.com](https://alphacephei.com/vosk/models) and place it in `ai-brain/models/`.
-
-### 2. Start Without SIP Configuration (Demo Mode)
-You don't need a SIP account to test the system! I've built a **Demo Mode** just for this.
-1.  Ensure your `.env` is created (copy `.env.example`).
-2.  **Leave the SIP fields blank** (`SIP_URI=`, etc.).
-3.  Run the master script:
-    ```powershell
-    powershell -ExecutionPolicy Bypass -File start.ps1
-    ```
-4.  **What happens next?**
-    - The script will detect the missing SIP credentials.
-    - It will launch a **Simulation** that calls the AI pipeline automatically.
-    - Open **http://localhost:5173** to see the logs processing live!
-
-### 3. Real Phone Setup
-Once you're ready for real calls:
-1.  Get a free SIP account (e.g., from [linphone.org](https://www.linphone.org/freesip)).
-2.  Fill in the `SIP_URI`, `SIP_PASSWORD`, and `SIP_REGISTRAR` in your `.env`.
-3.  Restart `start.ps1`.
+| Component | Shell Command | Notes |
+|-----------|---------------|-------|
+| **AI Bridge (Background)** | `cd ai-brain; python server.py` | Must be running first. |
+| **SIP System (Background)**| `cd phone-system; node sip_handler.js`| Connects the phone to the Brain. |
+| **Web Dashboard (UI)** | `cd frontend; npm run dev` | Launches the React interface. |
 
 ---
 
-## ⚙️ Full Configuration Reference (.env)
-
+## ⚙️ Full Configuration (.env)
 | Variable | Description |
 |----------|-------------|
 | `OWNER_NAME` | Your name (so the AI knows who it works for). |
+| `SIP_URI` | Your SIP account address (e.g., `sip:user@domain.com`). |
+| `SIP_PASSWORD` | Your SIP account password. |
+| `SIP_REGISTRAR` | Your SIP provider's address (e.g., `wss://sip.domain.com:5063`). |
 | `STT_ENGINE` | `vosk` (fast) or `whisper` (accurate). |
-| `TTS_ENGINE` | `pyttsx3` (fast) or `coqui` (cloned voice). |
-| `VOICE_SAMPLE_PATH`| Path to your 10sec voice clip for cloning. |
-| `SIP_REGISTRAR` | The WebSocket address of your SIP provider (e.g., `wss://sip.linphone.org:5063`). |
-| `OLLAMA_MODEL` | The LLM to use (default: `mistral`). |
+| `TTS_ENGINE` | `pyttsx3` (basic) or `coqui` (custom voice). |
 
 ---
 
-## 📂 Project Structure
-- `/ai-brain`: The Python intelligence.
-- `/phone-system`: The Node.js telephony gateway.
-- `/frontend`: The React dashboard UI.
-- `/voice-clone`: Where you store your voice samples.
-- `/logs`: Where the system stores rotation logs.
-- `start.ps1`: The master orchestration script.
+## 📂 Project Navigation
+- `/ai-brain`: Python Backend (AI & Logic).
+- `/phone-system`: Node.js Backend (SIP Telephony).
+- `/frontend`: React Frontend (Web UI).
+- `start.ps1`: The Master Startup Script.
