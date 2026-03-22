@@ -1,32 +1,32 @@
-18:10:48  INFO    [SIP] Checking Python AI bridge…
-18:10:48  INFO    [SIP] Python AI bridge OK ✓
-18:10:48  INFO    [SIP] Registering SIP agent as sip:ahadven@sip.linphone.org …
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | Configuration:
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · allowLegacyNotifications: false
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · authorizationHa1: ""
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · authorizationPassword: NOT SHOWN
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · authorizationUsername: "ahadven"
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · delegate: {}
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · contactName: ""
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · contactParams: {"transport":"ws"}
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · displayName: "Ahad's AI Assistant"
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · forceRport: false
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · gracefulShutdown: true
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · hackAllowUnregisteredOptionTags: false
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · hackIpInContact: false
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · hackViaTcp: false
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · instanceId: ""
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · instanceIdAlwaysAdded: false
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · logBuiltinEnabled: true
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · logConfiguration: true
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · logConnector: undefined
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · logLevel: "log"
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · noAnswerTimeout: 60
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · preloadedRouteSet: []
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · reconnectionAttempts: 0
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · reconnectionDelay: 4
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sendInitialProvisionalResponse: true
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sessionDescriptionHandlerFactory: (session, options) => {
+18:18:59  INFO    [SIP] Checking Python AI bridge…
+18:18:59  INFO    [SIP] Python AI bridge OK ✓
+18:18:59  INFO    [SIP] Registering SIP agent as sip:ahadven@sip.linphone.org …
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | Configuration:
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · allowLegacyNotifications: false
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · authorizationHa1: ""
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · authorizationPassword: NOT SHOWN
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · authorizationUsername: "ahadven"
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · delegate: {}
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · contactName: ""
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · contactParams: {"transport":"ws"}
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · displayName: "Ahad's AI Assistant"
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · forceRport: false
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · gracefulShutdown: true
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · hackAllowUnregisteredOptionTags: false
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · hackIpInContact: false
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · hackViaTcp: false
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · instanceId: ""
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · instanceIdAlwaysAdded: false
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · logBuiltinEnabled: true
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · logConfiguration: true
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · logConnector: undefined
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · logLevel: "log"
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · noAnswerTimeout: 60
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · preloadedRouteSet: []
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · reconnectionAttempts: 0
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · reconnectionDelay: 4
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sendInitialProvisionalResponse: true
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sessionDescriptionHandlerFactory: (session, options) => {
         // provide a default media stream factory if need be
         if (mediaStreamFactory === undefined) {
             mediaStreamFactory = defaultMediaStreamFactory();
@@ -41,14 +41,27 @@ Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | �
         const logger = session.userAgent.getLogger("sip.SessionDescriptionHandler");
         return new SessionDescriptionHandler(logger, mediaStreamFactory, sessionDescriptionHandlerConfiguration);
     }
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sessionDescriptionHandlerFactoryOptions: {}
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sipExtension100rel: "Unsupported"
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sipExtensionReplaces: "Unsupported"
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sipExtensionExtraSupported: []
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sipjsId: "28356"
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · transportConstructor: Transport
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · transportOptions: {"server":"sip:sip.linphone.org"}
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · uri: sip:ahadven@sip.linphone.org
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · userAgentString: "SIP.js/0.21.1"
-Mon Mar 23 2026 00:10:48 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · viaHost: "46kf06igc2ea.invalid"
-18:10:48  ERROR   [SIP] Fatal error: Invalid scheme in WebSocket Server URL
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sessionDescriptionHandlerFactoryOptions: {}
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sipExtension100rel: "Unsupported"
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sipExtensionReplaces: "Unsupported"
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sipExtensionExtraSupported: []
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · sipjsId: "r3qp7"
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · transportConstructor: Transport
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · transportOptions: {"server":"wss://sip.linphone.org:5063"}
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · uri: sip:ahadven@sip.linphone.org
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · userAgentString: "SIP.js/0.21.1"
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | · viaHost: "lcr6v7s00l0g.invalid"
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Registerer | Configuration:
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Registerer | · expires: 600
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Registerer | · extraContactHeaderParams: []
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Registerer | · extraHeaders: []
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Registerer | · logConfiguration: true
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Registerer | · instanceId: ""
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Registerer | · params: {}
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Registerer | · regId: 0
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Registerer | · registrar: sip:sip.linphone.org
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Registerer | · refreshFrequency: 99
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | Starting sip:ahadven@sip.linphone.org
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.UserAgent | Transitioned from Stopped to Started
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Transport | Connecting wss://sip.linphone.org:5063
+Mon Mar 23 2026 00:18:59 GMT+0600 (Bangladesh Standard Time) | sip.Transport | Transitioned from Disconnected to Connecting
