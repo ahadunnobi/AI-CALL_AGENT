@@ -1,207 +1,99 @@
-# 🤖 AI Call Agent
+# 🤖 AI Call Agent — Fully Local, Zero-Cost Assistant
 
-A fully local, **zero-cost** AI phone agent that answers calls on your behalf. Built with:
+A state-of-the-art, private AI phone agent that runs entirely on your laptop. It answers calls, understands speech, thinks using a local LLM, and speaks back in a natural or cloned voice.
 
-| Layer | Technology |
-|-------|------------|
-| Telephony | SIP.js (Node.js) |
-| Speech-to-Text | Vosk (offline) or Whisper |
-| AI Brain | Ollama + Mistral (local LLM) |
-| Voice Synthesis | pyttsx3 or Coqui TTS (voice cloning) |
-| Memory | SQLite |
-| API Bridge | FastAPI (Python) |
-
-**Total cost: $0** — everything runs on your laptop, nothing goes to the cloud.
+## 🌟 Project Philosophy
+- **$0 Cost**: No API keys, no subscription, no per-minute fees.
+- **100% Private**: Your voice and data never leave your machine.
+- **Local First**: Built with open-source tools (Ollama, Vosk, SIP.js).
 
 ---
 
-## Prerequisites
+## 🧠 What is "The Brain"?
+The "Brain" is the intelligence hub of the project, located in the `/ai-brain` directory. It is a **Python FastAPI server** that coordinates four critical components:
 
-| Tool | Install | Notes |
-|------|---------|-------|
-| **Python 3.10+** | [python.org](https://www.python.org) | Add to PATH |
-| **Node.js 18+** | [nodejs.org](https://nodejs.org) | |
-| **Ollama** | [ollama.com](https://ollama.com) | Local LLM runtime |
-| **Git** | [git-scm.com](https://git-scm.com) | Optional |
-
----
-
-## Quick Start
-
-### 1. Copy environment config
-```powershell
-Copy-Item .env.example .env
-```
-Edit `.env` and set your `OWNER_NAME` at minimum. SIP credentials are optional for testing.
-
-### 2. Install Ollama and pull a model
-```powershell
-# After installing Ollama from ollama.com:
-ollama pull mistral
-```
-> First pull is ~4 GB. `tinyllama` (~600 MB) is a lighter option for slower machines.
-
-### 3. Download a Vosk speech model
-```powershell
-# Download and extract the small English model (~50 MB):
-# https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
-# Extract to: ai-brain/models/vosk-model-small-en-us-0.15/
-```
-
-### 4. Start everything
-```powershell
-powershell -ExecutionPolicy Bypass -File start.ps1
-```
-
-The script will:
-- Install Python & Node dependencies automatically (first run only)
-- Start Ollama
-- Start the Python FastAPI bridge at `http://localhost:8000`
-- Start the SIP handler (demo mode if no SIP credentials)
+1.  **Speech-to-Text (STT)**: Uses **Vosk** (offline) to turn the caller's voice into text in milliseconds. 
+2.  **LLM (Mistral)**: The reasoning engine. It uses **Ollama** to process the conversation history and decide what to say next based on your personal "Assistant Persona".
+3.  **Memory (SQLite)**: A local database that recognizes returning callers by their phone number and remembers previous interactions.
+4.  **Voice Synthesis (TTS)**: Uses **pyttsx3** (basic) or **Coqui XTTS-v2** (advanced voice cloning) to generate the agent's response audio.
 
 ---
 
-## Testing Without a SIP Account
-
-The system runs in **demo mode** when SIP credentials are absent. To test the full AI pipeline:
-
-1. Start the server: `cd ai-brain && python server.py`
-2. Open the API docs: `http://localhost:8000/docs`
-3. Use the interactive docs to call `/call/start`, `/call/greeting`, `/call/turn` with base64 WAV audio
-
-Or run the Node.js demo:
-```powershell
-cd phone-system
-npm install
-node sip_handler.js
-```
-The demo mode will call through the full pipeline (STT → LLM → TTS) without needing a phone.
+## 🖥️ What's Happening in the Frontend?
+The frontend is a **Vite + React Dashboard** located in `/frontend`. 
+- **Live Stream**: It connects to a **Server-Sent Events (SSE)** log stream from the Python backend.
+- **Visual Feedback**: You can see "Live Agent Activity"—exactly what the agent is hearing, what it's thinking, and what it's saying in real-time.
+- **Remote Control**: It provides quick links to the API documentation (`/docs`) to manually trigger actions.
 
 ---
 
-## Getting a Free SIP Account
+## 📞 What's Happening in the Backend?
+There are two "backends" working together:
 
-For real calls, get a free SIP number from any of these providers:
-
-| Provider | Free Tier | Notes |
-|----------|-----------|-------|
-| [Linphone FreeSIP](https://www.linphone.org/freesip) | Yes | `sip:user@sip.linphone.org` |
-| [sip.us](https://sip.us) | Trial | US numbers |
-| [voip.ms](https://voip.ms) | Credit-based | Small deposit |
-
-After registering, update `.env`:
-```
-SIP_URI=sip:yourusername@sip.linphone.org
-SIP_PASSWORD=your_password
-SIP_REGISTRAR=wss://sip.linphone.org:5063
-SIP_DISPLAY_NAME=Your Name's Assistant
-```
+1.  **Telephony Layer (Node.js)**: Located in `/phone-system`. It uses **SIP.js** to talk to the phone network. It handles the "ringing", "answering", and "audio streaming". It pipes the caller's audio to the...
+2.  **AI Bridge (FastAPI)**: The Python server that runs the "Brain" logic. It receives audio chunks, processes them through the STT → LLM → TTS pipeline, and returns the response audio to Node.js to be played back to the caller.
 
 ---
 
-## Configuration Reference
-
-| Variable | Default | Description |
-|----------|---------|-------------|
-| `OWNER_NAME` | `Your Name` | Your real name (used in agent persona) |
-| `OLLAMA_MODEL` | `mistral` | Any model in your Ollama library |
-| `STT_ENGINE` | `vosk` | `vosk` or `whisper` |
-| `TTS_ENGINE` | `pyttsx3` | `pyttsx3` or `coqui` |
-| `VOICE_SAMPLE_PATH` | `./voice-clone/my_voice.wav` | Your voice recording for Coqui cloning |
-| `LLM_HISTORY_TURNS` | `6` | Turns to keep in conversation memory |
-| `LOG_LEVEL` | `INFO` | `DEBUG` `INFO` `WARNING` `ERROR` |
-
-Full list of variables: [`.env.example`](.env.example)
+## 🛠️ Technology Stack
+| Layer | Tech | Why? |
+|-------|------|------|
+| **Telephony** | Node.js + SIP.js | High-performance handling of VoIP protocols. |
+| **Logic Server**| Python + FastAPI | Fast, modern API for AI model integration. |
+| **STT** | Vosk | Fully offline, extremely fast on CPU. |
+| **LLM** | Ollama (Mistral) | Industry standard for local high-quality AI. |
+| **TTS** | Coqui XTTS-v2 | Professional voice cloning for a premium feel. |
+| **Database** | SQLite | Lightweight, file-based, no setup required. |
+| **UI** | React + Framer Motion | Fluid, modern dashboard with live animations. |
 
 ---
 
-## Enabling Voice Cloning
+## 🚀 How to Execute (The "One-Click" Way)
 
-1. Record 3–5 WAV clips of yourself speaking (5–10 sec each) — see [`voice-clone/README.md`](voice-clone/README.md)
-2. Save the best clip as `voice-clone/my_voice.wav`
-3. Install Coqui TTS: `pip install TTS` (~500 MB, downloads XTTS-v2 model on first use ~1.8 GB)
-4. Set in `.env`:
-   ```
-   TTS_ENGINE=coqui
-   VOICE_SAMPLE_PATH=./voice-clone/my_voice.wav
-   ```
-5. Restart the server
+### 1. Prerequisites
+- **Python 3.10+**
+- **Node.js 18+**
+- **Ollama** (Download and run `ollama pull mistral`)
+- **Vosk Model**: Download one from [alphacephei.com](https://alphacephei.com/vosk/models) and place it in `ai-brain/models/`.
 
----
+### 2. Start Without SIP Configuration (Demo Mode)
+You don't need a SIP account to test the system! I've built a **Demo Mode** just for this.
+1.  Ensure your `.env` is created (copy `.env.example`).
+2.  **Leave the SIP fields blank** (`SIP_URI=`, etc.).
+3.  Run the master script:
+    ```powershell
+    powershell -ExecutionPolicy Bypass -File start.ps1
+    ```
+4.  **What happens next?**
+    - The script will detect the missing SIP credentials.
+    - It will launch a **Simulation** that calls the AI pipeline automatically.
+    - Open **http://localhost:5173** to see the logs processing live!
 
-## Switching to Whisper (Higher Accuracy STT)
-
-```powershell
-pip install openai-whisper torch
-```
-Set in `.env`:
-```
-STT_ENGINE=whisper
-WHISPER_MODEL=base   # tiny | base | small | medium | large
-```
-
----
-
-## Project Structure
-
-```
-AI-CALL_AGENT/
-├── ai-brain/
-│   ├── config.py            # Central config (reads .env)
-│   ├── logger.py            # Structured logging
-│   ├── memory.py            # SQLite caller memory
-│   ├── speech_to_text.py    # STT: Vosk / Whisper
-│   ├── ai_brain.py          # LLM: Ollama conversation engine
-│   ├── voice_synthesis.py   # TTS: pyttsx3 / Coqui
-│   ├── call_processor.py    # Orchestration pipeline
-│   ├── server.py            # FastAPI bridge server
-│   ├── requirements.txt
-│   └── models/              # Put Vosk model folder here
-├── phone-system/
-│   ├── sip_handler.js       # SIP.js call handler
-│   ├── bridge_client.js     # HTTP client → Python
-│   └── package.json
-├── voice-clone/
-│   └── README.md            # Voice recording guide
-├── memory/                  # SQLite DB (auto-created)
-├── logs/                    # Log files (auto-created)
-├── .env.example             # Config template
-├── .env                     # Your config (create from example)
-├── start.ps1                # One-click Windows startup
-├── ARCHITECTURE.md          # System diagram
-└── README.md
-```
+### 3. Real Phone Setup
+Once you're ready for real calls:
+1.  Get a free SIP account (e.g., from [linphone.org](https://www.linphone.org/freesip)).
+2.  Fill in the `SIP_URI`, `SIP_PASSWORD`, and `SIP_REGISTRAR` in your `.env`.
+3.  Restart `start.ps1`.
 
 ---
 
-## Logs
+## ⚙️ Full Configuration Reference (.env)
 
-All logs are written to `./logs/`:
-- `agent.log` — Python AI modules
-- `python_server.log` — FastAPI server stdout
-- `sip_handler.log` — Node.js SIP events
-
-Set `LOG_LEVEL=DEBUG` in `.env` for verbose output.
-
----
-
-## Troubleshooting
-
-| Problem | Solution |
-|---------|----------|
-| `Vosk model not found` | Download from [alphacephei.com/vosk/models](https://alphacephei.com/vosk/models), extract to `ai-brain/models/` |
-| `Cannot connect to Ollama` | Run `ollama serve` in a separate terminal |
-| `FastAPI server did not start` | Check `logs/python_server_err.log` |
-| SIP not registering | Verify SIP_URI format: `sip:user@domain.com` |
-| Slow TTS | Switch to `pyttsx3` or use a GPU for Coqui |
-| High memory usage | Use `tinyllama` instead of `mistral` in `.env` |
+| Variable | Description |
+|----------|-------------|
+| `OWNER_NAME` | Your name (so the AI knows who it works for). |
+| `STT_ENGINE` | `vosk` (fast) or `whisper` (accurate). |
+| `TTS_ENGINE` | `pyttsx3` (fast) or `coqui` (cloned voice). |
+| `VOICE_SAMPLE_PATH`| Path to your 10sec voice clip for cloning. |
+| `SIP_REGISTRAR` | The WebSocket address of your SIP provider (e.g., `wss://sip.linphone.org:5063`). |
+| `OLLAMA_MODEL` | The LLM to use (default: `mistral`). |
 
 ---
 
-## Roadmap
-
-- [ ] Browser-based audio pipeline for full WebRTC call audio capture
-- [ ] FreeSWITCH / Asterisk media server integration guide
-- [ ] Outbound call scheduling (call you with reminders)
-- [ ] Web dashboard for call logs and caller management
-- [ ] Multi-language support (Vosk + XTTS-v2 multilingual)
+## 📂 Project Structure
+- `/ai-brain`: The Python intelligence.
+- `/phone-system`: The Node.js telephony gateway.
+- `/frontend`: The React dashboard UI.
+- `/voice-clone`: Where you store your voice samples.
+- `/logs`: Where the system stores rotation logs.
+- `start.ps1`: The master orchestration script.
