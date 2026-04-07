@@ -45,7 +45,7 @@ def run_test():
     # Here we'll just check the endpoint handles the request.
     try:
         # Dummy audio turn (this might result in "I didn't catch that" if STT fails on empty)
-        dummy_audio = "UklGRhwAAABXQVZFZm10IBAAAAABAAEARKwAAIhYAQACABAAZGF0YRAAAAAA" # Tiny WAV header
+        dummy_audio = "UklGRiQAAABXQVZFZm10IBAAAAABAAEAgD4AAAB9AAACABAAZGF0YQAAAAA=" # Valid empty 16kHz WAV
         resp = requests.post(f"{BASE_URL}/call/turn", json={
             "phone": PHONE,
             "audio_b64": dummy_audio,
@@ -60,7 +60,7 @@ def run_test():
     log("Ending call...")
     resp = requests.post(f"{BASE_URL}/call/end", json={"phone": PHONE})
     log(f"Response: {resp.json()}")
-    log("Test complete! ✅")
+    log("Test complete! [OK]")
 
 if __name__ == "__main__":
     run_test()
