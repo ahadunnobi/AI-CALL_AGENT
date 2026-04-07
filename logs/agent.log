@@ -11,3 +11,63 @@
 2026-03-20 01:41:37  INFO      call_processor — Initialising CallProcessor — loading models…
 2026-03-20 01:41:37  INFO      speech_to_text — Loading Vosk model from ./ai-brain/models/vosk-model-small-en-us-0.15 …
 2026-03-20 01:41:38  INFO      speech_to_text — Vosk model loaded.
+2026-04-07 23:47:25  INFO      server — AI Call Agent server starting up…
+2026-04-07 23:48:12  INFO      call_processor — Initialising CallProcessor — loading models…
+2026-04-07 23:48:12  INFO      speech_to_text — Loading Vosk model from c:\projects\AI-CALL_AGENT\ai-brain\models\vosk-model-small-en-us-0.15 …
+2026-04-07 23:48:13  INFO      speech_to_text — Vosk model loaded.
+2026-04-07 23:48:14  INFO      comtypes.client._code_cache — Could not import comtypes.gen, trying to create it.
+2026-04-07 23:48:14  INFO      comtypes.client._code_cache — Created comtypes.gen directory: 'C:\Users\ASUS\AppData\Local\Programs\Python\Python314\Lib\site-packages\comtypes\gen'
+2026-04-07 23:48:14  INFO      comtypes.client._code_cache — Writing __init__.py file: 'C:\Users\ASUS\AppData\Local\Programs\Python\Python314\Lib\site-packages\comtypes\gen\__init__.py'
+2026-04-07 23:48:14  INFO      comtypes.client._code_cache — Using writeable comtypes cache directory: 'C:\Users\ASUS\AppData\Local\Programs\Python\Python314\Lib\site-packages\comtypes\gen'
+2026-04-07 23:48:14  INFO      comtypes.client._generate — Could not import comtypes.gen._C866CA3A_32F7_11D2_9602_00C04F8EE628_0_5_4: No module named 'comtypes.gen._C866CA3A_32F7_11D2_9602_00C04F8EE628_0_5_4'
+2026-04-07 23:48:14  INFO      comtypes.client._generate — # Generating comtypes.gen._C866CA3A_32F7_11D2_9602_00C04F8EE628_0_5_4
+2026-04-07 23:48:14  INFO      comtypes.client._generate — # Generating comtypes.gen.SpeechLib
+2026-04-07 23:48:14  INFO      comtypes.client._generate — Could not import comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0: No module named 'comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0'
+2026-04-07 23:48:14  INFO      comtypes.client._generate — # Generating comtypes.gen._00020430_0000_0000_C000_000000000046_0_2_0
+2026-04-07 23:48:14  INFO      comtypes.client._generate — # Generating comtypes.gen.stdole
+2026-04-07 23:48:15  INFO      voice_synthesis — Pyttsx3TTS initialised (rate=160)
+2026-04-07 23:48:15  INFO      memory — CallerMemory initialised at c:\projects\AI-CALL_AGENT\memory\caller_memory.db
+2026-04-07 23:48:15  INFO      call_processor — CallProcessor ready.
+2026-04-07 23:48:15  INFO      call_processor — Call started from +1234567890
+2026-04-07 23:48:15  INFO      ai_brain — New call session initialised.
+2026-04-07 23:48:15  INFO      server — Session started for +1234567890
+2026-04-07 23:48:19  ERROR     server — Error processing turn for +1234567890: fmt chunk and/or data chunk missing
+Traceback (most recent call last):
+  File "C:\projects\AI-CALL_AGENT\ai-brain\server.py", line 123, in process_turn
+    wav_bytes, text = proc.process_turn(
+                      ~~~~~~~~~~~~~~~~~^
+        audio_bytes,
+        ^^^^^^^^^^^^
+        is_wav=req.is_wav,
+        ^^^^^^^^^^^^^^^^^^
+        sample_rate=req.sample_rate,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\projects\AI-CALL_AGENT\ai-brain\call_processor.py", line 82, in process_turn
+    pcm, sample_rate = wav_to_pcm(audio_bytes)
+                       ~~~~~~~~~~^^^^^^^^^^^^^
+  File "C:\projects\AI-CALL_AGENT\ai-brain\speech_to_text.py", line 143, in wav_to_pcm
+    with wave.open(io.BytesIO(wav_bytes)) as wf:
+         ~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Users\ASUS\AppData\Local\Programs\Python\Python314\Lib\wave.py", line 661, in open
+    return Wave_read(f)
+  File "C:\Users\ASUS\AppData\Local\Programs\Python\Python314\Lib\wave.py", line 286, in __init__
+    self.initfp(f)
+    ~~~~~~~~~~~^^^
+  File "C:\Users\ASUS\AppData\Local\Programs\Python\Python314\Lib\wave.py", line 277, in initfp
+    raise Error('fmt chunk and/or data chunk missing')
+wave.Error: fmt chunk and/or data chunk missing
+2026-04-07 23:48:21  INFO      call_processor — Call ended for +1234567890. Transcript saved (1 lines).
+2026-04-07 23:48:21  INFO      server — Session ended for +1234567890
+2026-04-07 23:55:01  INFO      call_processor — Initialising CallProcessor — loading models…
+2026-04-07 23:55:01  INFO      speech_to_text — Loading Vosk model from c:\projects\AI-CALL_AGENT\ai-brain\models\vosk-model-small-en-us-0.15 …
+2026-04-07 23:55:02  INFO      speech_to_text — Vosk model loaded.
+2026-04-07 23:55:02  INFO      voice_synthesis — Pyttsx3TTS initialised (rate=160)
+2026-04-07 23:55:02  INFO      memory — CallerMemory initialised at c:\projects\AI-CALL_AGENT\memory\caller_memory.db
+2026-04-07 23:55:02  INFO      call_processor — CallProcessor ready.
+2026-04-07 23:55:02  INFO      call_processor — Call started from +1234567890
+2026-04-07 23:55:02  INFO      ai_brain — New call session initialised.
+2026-04-07 23:55:02  INFO      server — Session started for +1234567890
+2026-04-07 23:55:06  INFO      call_processor — Caller said: ''
+2026-04-07 23:55:06  INFO      call_processor — Agent responds: "I'm sorry, I didn't catch that. Could you say it again?"
