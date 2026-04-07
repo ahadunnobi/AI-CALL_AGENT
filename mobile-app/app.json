@@ -13,18 +13,41 @@
       "backgroundColor": "#ffffff"
     },
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.paica.assistant",
+      "infoPlist": {
+        "NSMicrophoneUsageDescription": "PAICA needs access to your microphone to answer calls and understand your voice."
+      }
     },
     "android": {
+      "package": "com.paica.assistant",
+      "permissions": [
+        "RECORD_AUDIO",
+        "MODIFY_AUDIO_SETTINGS",
+        "INTERNET",
+        "ACCESS_NETWORK_STATE",
+        "FOREGROUND_SERVICE",
+        "READ_PHONE_STATE",
+        "MANAGE_OWN_CALLS"
+      ],
       "adaptiveIcon": {
         "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#1a1a1a"
       },
       "edgeToEdgeEnabled": true,
       "predictiveBackGestureEnabled": false
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "plugins": [
+      [
+        "react-native-webrtc",
+        {
+          "cameraPermission": "PAICA needs access to the camera for video calls (optional)."
+        }
+      ],
+      "react-native-callkeep"
+    ]
   }
 }
