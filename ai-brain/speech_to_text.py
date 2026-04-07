@@ -140,7 +140,12 @@ def _write_wav(path: str, pcm_bytes: bytes, sample_rate: int) -> None:
 
 def wav_to_pcm(wav_bytes: bytes) -> tuple[bytes, int]:
     """Extract raw PCM frames and sample rate from WAV bytes."""
-    with wave.open(io.BytesIO(wav_bytes)) as wf:
-        sample_rate = wf.getframerate()
-        pcm = wf.readframes(wf.getnframes())
-    return pcm, sample_rate
+    try:
+        with wave.open(io.BytesIO(wav_bytes)) as wf:
+            sample_rate = wf.getframerate()
+            pcm = wf.readframes(wf.getnframes())
+        return pcm, sample_rate
+    except wave.Error as e:
+        # Avoid crashing the entire server on a malformed chunk
+        log.error("Failed to parse WAV bytes: %s", e)
+        return b"", 16000
