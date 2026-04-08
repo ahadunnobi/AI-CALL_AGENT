@@ -8,7 +8,7 @@ export const PERSONAS: PersonaDefinition[] = [
   {
     id: 'professional',
     name: 'Professional',
-    systemPrompt: "You are a professional personal assistant named PAICA. You help politely, concisely, and efficiently. Keep responses under 2 sentences.",
+    systemPrompt: "You are a professional personal assistant named AURA. You help politely, concisely, and efficiently. Keep responses under 2 sentences.",
   },
   {
     id: 'sarcastic',

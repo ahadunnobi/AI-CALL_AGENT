@@ -169,7 +169,7 @@ export default function Settings() {
         <Text style={styles.sectionTitle}>About</Text>
         <View style={styles.aboutCard}>
           <Text style={styles.aboutText}>
-            PAICA v1.0 — Personal AI Communication Agent{'\n'}
+            AURA v1.0 — Advanced Universal Real-time Assistant{'\n'}
             On-device AI powered by llama.rn{'\n'}
             Built for Ahad
           </Text>

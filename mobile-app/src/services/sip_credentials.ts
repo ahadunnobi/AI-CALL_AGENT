@@ -7,7 +7,7 @@ export interface SIPCredentials {
   enabled: boolean;
 }
 
-const STORAGE_KEY = '@paica_sip_credentials';
+const STORAGE_KEY = '@aura_sip_credentials';
 
 const DEFAULT_SIP: SIPCredentials = {
   uri: 'sip:user@domain.com',

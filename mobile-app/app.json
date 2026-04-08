@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "mobile-app",
-    "slug": "mobile-app",
+    "name": "AURA",
+    "slug": "aura-assistant",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
@@ -14,13 +14,13 @@
     },
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.paica.assistant",
+      "bundleIdentifier": "com.aura.assistant",
       "infoPlist": {
-        "NSMicrophoneUsageDescription": "PAICA needs access to your microphone to answer calls and understand your voice."
+        "NSMicrophoneUsageDescription": "AURA needs access to your microphone to answer calls and understand your voice."
       }
     },
     "android": {
-      "package": "com.paica.assistant",
+      "package": "com.aura.assistant",
       "permissions": [
         "RECORD_AUDIO",
         "MODIFY_AUDIO_SETTINGS",
@@ -44,8 +44,8 @@
       [
         "@react-native-voice/voice",
         {
-          "microphonePermission": "PAICA needs access to your microphone to understand your voice.",
-          "speechRecognitionPermission": "PAICA needs speech recognition to transcribe your voice locally."
+          "microphonePermission": "AURA needs access to your microphone to understand your voice.",
+          "speechRecognitionPermission": "AURA needs speech recognition to transcribe your voice locally."
         }
       ]
     ]

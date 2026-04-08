@@ -9,7 +9,7 @@ export interface PastCall {
   logs: CallLog[];
 }
 
-const STORAGE_KEY = '@paica_call_history';
+const STORAGE_KEY = '@aura_call_history';
 
 class HistoryService {
   async getHistory(): Promise<PastCall[]> {

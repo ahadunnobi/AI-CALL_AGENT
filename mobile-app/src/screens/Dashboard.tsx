@@ -1,5 +1,5 @@
 /**
- * Dashboard.tsx — Main screen of the PAICA mobile app.
+ * Dashboard.tsx — Main screen of the AURA mobile app.
  *
  * Displays AI status, call controls, and a live log feed.
  */
@@ -176,7 +176,7 @@ export default function Dashboard() {
       {/* Header */}
       <View style={styles.header}>
         <Text style={styles.title}>AURA</Text>
-        <Text style={styles.subtitle}>Personal AI Call Agent</Text>
+        <Text style={styles.subtitle}>Advanced Universal Real-time Assistant</Text>
       </View>
 
       {/* Status Cards */}
