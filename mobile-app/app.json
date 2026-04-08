@@ -42,12 +42,12 @@
     },
     "plugins": [
       [
-        "react-native-webrtc",
+        "@react-native-voice/voice",
         {
-          "cameraPermission": "PAICA needs access to the camera for video calls (optional)."
+          "microphonePermission": "PAICA needs access to your microphone to understand your voice.",
+          "speechRecognitionPermission": "PAICA needs speech recognition to transcribe your voice locally."
         }
-      ],
-      "react-native-callkeep"
+      ]
     ]
   }
 }
