@@ -10,6 +10,7 @@ import { ttsService } from './tts_service';
 import { bridgeClient } from './bridge_client';
 import { PERSONAS, DEFAULT_PERSONA_ID } from '../constants/personas';
 import { historyService } from './history_service';
+import { sipService } from './sip_service';
 
 export type CallState = 'idle' | 'ringing' | 'active' | 'processing' | 'speaking' | 'ended';
 export type InferenceMode = 'local' | 'bridge' | 'auto';
@@ -30,6 +31,24 @@ class CallHandler {
   private _personaId: string = DEFAULT_PERSONA_ID;
   private stateListeners: CallStateListener[] = [];
   private logListeners: LogListener[] = [];
+
+  constructor() {
+    // Automatically connect to SIP if credentials are set
+    sipService.connect();
+
+    sipService.onIncomingCall(async () => {
+      this.setState('ringing');
+      this.addLog('system', 'Incoming SIP call ringing...');
+      
+      try {
+        await sipService.answerCall();
+        this.addLog('system', 'SIP call auto-answered');
+        await this.startCall();
+      } catch (err) {
+        this.addLog('system', 'Failed to answer SIP call');
+      }
+    });
+  }
 
   get systemPrompt(): string {
     const persona = PERSONAS.find(p => p.id === this._personaId);
@@ -205,6 +224,7 @@ class CallHandler {
   async endCall(): Promise<void> {
     await sttService.stop();
     await ttsService.stop();
+    await sipService.hangup();
     this.setState('ended');
     this.addLog('system', 'Call ended');
 

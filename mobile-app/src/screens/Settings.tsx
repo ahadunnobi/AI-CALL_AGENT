@@ -15,6 +15,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { THEME } from '../constants/theme';
 import { bridgeClient } from '../services/bridge_client';
 import { callHandler, InferenceMode } from '../services/call_handler';
+import { SIPCredentialsManager, SIPCredentials } from '../services/sip_credentials';
 
 const MODES: { value: InferenceMode; label: string; desc: string }[] = [
   { value: 'auto', label: 'Auto', desc: 'Use laptop when available, else local AI' },
@@ -26,6 +27,16 @@ export default function Settings() {
   const [bridgeUrl, setBridgeUrl] = useState(bridgeClient.baseUrl);
   const [selectedMode, setSelectedMode] = useState<InferenceMode>(callHandler.mode);
   const [testing, setTesting] = useState(false);
+  const [sip, setSip] = useState<SIPCredentials>({ uri: '', password: '', registrar: '', enabled: false });
+
+  React.useEffect(() => {
+    SIPCredentialsManager.get().then(setSip);
+  }, []);
+
+  const handleSaveSip = useCallback(async () => {
+    await SIPCredentialsManager.save(sip);
+    Alert.alert('Saved', 'SIP credentials saved locally.');
+  }, [sip]);
 
   const handleSaveUrl = useCallback(async () => {
     bridgeClient.baseUrl = bridgeUrl;
@@ -107,6 +118,52 @@ export default function Settings() {
             </Text>
           </TouchableOpacity>
         </View>
+
+        {/* SIP Settings */}
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', marginTop: THEME.spacing.lg, marginBottom: THEME.spacing.sm }}>
+          <Text style={[styles.sectionTitle, { marginTop: 0, marginBottom: 0 }]}>SIP Telephony (Standalone)</Text>
+          <TouchableOpacity
+            style={[styles.toggleBtn, sip.enabled ? styles.toggleBtnOn : styles.toggleBtnOff]}
+            onPress={() => setSip({ ...sip, enabled: !sip.enabled })}
+          >
+            <Text style={styles.toggleBtnText}>{sip.enabled ? 'Enabled' : 'Disabled'}</Text>
+          </TouchableOpacity>
+        </View>
+        <Text style={styles.sectionHint}>
+          Allow your phone to receive real SIP calls natively without the laptop.
+        </Text>
+        
+        {sip.enabled && (
+          <View style={styles.sipGroup}>
+            <TextInput
+              style={styles.input}
+              value={sip.uri}
+              onChangeText={(text) => setSip({ ...sip, uri: text })}
+              placeholder="SIP URI (e.g. sip:username@sip.linphone.org)"
+              placeholderTextColor={THEME.colors.textMuted}
+              autoCapitalize="none"
+            />
+            <TextInput
+              style={[styles.input, { marginTop: 8 }]}
+              value={sip.password}
+              onChangeText={(text) => setSip({ ...sip, password: text })}
+              placeholder="SIP Password"
+              placeholderTextColor={THEME.colors.textMuted}
+              secureTextEntry
+            />
+            <TextInput
+              style={[styles.input, { marginTop: 8 }]}
+              value={sip.registrar}
+              onChangeText={(text) => setSip({ ...sip, registrar: text })}
+              placeholder="WSS Registrar (e.g. wss://sip.linphone.org:5063)"
+              placeholderTextColor={THEME.colors.textMuted}
+              autoCapitalize="none"
+            />
+            <TouchableOpacity style={[styles.btnSave, { marginTop: 12 }]} onPress={handleSaveSip}>
+              <Text style={styles.btnSaveText}>Save SIP Configuration</Text>
+            </TouchableOpacity>
+          </View>
+        )}
 
         {/* About */}
         <Text style={styles.sectionTitle}>About</Text>
@@ -197,7 +254,34 @@ const styles = StyleSheet.create({
     color: THEME.colors.textSecondary,
     marginTop: 2,
   },
-  // Input
+  // Input & Toggles
+  toggleBtn: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    borderRadius: THEME.radius.full,
+    borderWidth: 1,
+  },
+  toggleBtnOn: {
+    backgroundColor: THEME.colors.primary + '20',
+    borderColor: THEME.colors.primary,
+  },
+  toggleBtnOff: {
+    backgroundColor: THEME.colors.bgElevated,
+    borderColor: THEME.colors.border,
+  },
+  toggleBtnText: {
+    fontSize: THEME.font.size.xs,
+    fontWeight: THEME.font.weight.bold,
+    color: THEME.colors.text,
+  },
+  sipGroup: {
+    marginBottom: THEME.spacing.md,
+    backgroundColor: THEME.colors.bgElevated,
+    padding: THEME.spacing.md,
+    borderRadius: THEME.radius.md,
+    borderWidth: 1,
+    borderColor: THEME.colors.border,
+  },
   input: {
     backgroundColor: THEME.colors.bgCard,
     borderWidth: 1,
