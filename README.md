@@ -1,77 +1,106 @@
-# 🤖 AI Call Agent — Fully Local, Zero-Cost Assistant
+# 🦾 AI Agent: PAICA (Personal AI Communication Agent)
 
-A state-of-the-art, private AI phone agent that runs entirely on your laptop. It answers calls, understands speech, thinks using a local LLM, and speaks back in a natural or cloned voice.
-
-## 🌟 Project Philosophy
-- **$0 Cost**: No API keys, no subscription, no per-minute fees.
-- **100% Private**: Your voice and data never leave your machine.
-- **Local First**: Built with open-source tools (Ollama, Vosk, SIP.js).
+A state-of-the-art, 100% private, and local-first AI phone agent. It handles calls via SIP, processes speech using local LLMs, and responds with natural or cloned voices. Built for users who demand privacy and total control over their communication.
 
 ---
 
-## 🧠 Core Architecture
-- **AI Brain (Python)**: Handles Speech-to-Text (Vosk/Whisper), Memory (SQLite), and LLM Reasoning (Ollama).
-- **Telephony (Node.js)**: Manages SIP registration and real-time audio streaming.
-- **Dashboard (React)**: Live-stream of agent logs and system activity.
+## 🌟 Key Features
+
+*   **$0 Operating Cost**: No API subscriptions (OpenAI, ElevenLabs, Twilio) required.
+*   **Privacy-First**: No audio or transcripts ever leave your local network.
+*   **Hybrid Intelligence**: Seamlessly offload heavy AI processing from your smartphone to your laptop for ultra-fast response times.
+*   **On-Device AI**: Run LLMs directly on your phone using `llama.rn` when away from your laptop.
+*   **Voice Cloning**: Speak to callers in your own voice using Coqui XTTS-v2 cloning technology.
+*   **Real-Time Telephony**: Standard SIP integration works with Linphone, VoIP.ms, and other providers.
 
 ---
 
-## 🚀 How to Run (Step-by-Step)
+## 🏗️ System Architecture
 
-### **Step 1: Start All Services on Your Laptop**
-Open a terminal (PowerShell) and run this single command to launch everything:
-```powershell
-powershell -ExecutionPolicy Bypass -File start.ps1
+```mermaid
+graph TD
+    User((📞 Caller)) <--> SIP[SIP Provider / Linphone]
+    SIP <--> Handler[Node.js SIP Handler]
+    
+    subgraph "Laptop (AI Powerhouse)"
+        Handler <--> Brain[Python AI Brain]
+        Brain <--> Ollama[Local LLM - Ollama]
+        Brain <--> STT[Speech-to-Text - Vosk/Whisper]
+        Brain <--> TTS[Voice Synthesis - Coqui/pyttsx3]
+        Brain <--> DB[(SQLite Memory)]
+        Dashboard[React Dashboard] --- Brain
+    end
+
+    subgraph "Mobile (PAICA App)"
+        App[React Native App]
+        App --- LlamaRN[llama.rn - On-Device LLM]
+        App --- Audio[Native Audio/STT]
+    end
+
+    App <-- "Hybrid Bridge (WiFi)" --> Brain
 ```
-*Wait ~20 seconds for the AI models to load. The dashboard will launch automatically.*
-
-### **Step 2: Access the Web Dashboard**
-To see the **Live Agent Stream** and logs on your website UI, open:
-👉 **[http://localhost:5173](http://localhost:5173)**
 
 ---
 
-## 📱 How to Connect Your Mobile Phone
+## 📁 Repository Structure
 
-### **Option A: The Local Test (No Account Needed)**
-1.  Run `start.ps1` as shown above.
-2.  Open the Dashboard UI.
-3.  The system will run in **Demo Mode** — you will see a simulated call start and process on the screen.
-
-### **Option B: Real Phone Integration (Using SIP)**
-1.  **Get a SIP Account**: Register at [linphone.org](https://www.linphone.org/freesip) (Free) or [voip.ms](https://voip.ms).
-2.  **Configure `.env`**: Put your account details (URI, Password, Registrar) in your `.env` file.
-3.  **Install App on Phone**: Download the **Linphone** app from the App Store or Google Play.
-4.  **Register the App**: Log in to the app with the **same** SIP account.
-5.  **Call the Agent**: Dial your SIP address from another phone to reach the agent. It will answer and you'll see it live in your Dashboard!
+*   [**`/ai-brain`**](file:///c:/projects/AI-CALL_AGENT/ai-brain): The core Python logic. Manages LLM orchestration, memory, and speech processing.
+*   [**`/mobile-app`**](file:///c:/projects/AI-CALL_AGENT/mobile-app): React Native (Expo) application for Android and iOS. Supports local inference.
+*   [**`/phone-system`**](file:///c:/projects/AI-CALL_AGENT/phone-system): Node.js service managing SIP registration and real-time audio streaming.
+*   [**`/frontend`**](file:///c:/projects/AI-CALL_AGENT/frontend): A Vite + React dashboard to monitor agent activity and call logs in real-time.
+*   [**`/voice-clone`**](file:///c:/projects/AI-CALL_AGENT/voice-clone): Guide and directory for creating your personal voice clone samples.
 
 ---
 
-## 💻 Technical Reference: Individual Shell Commands
-If you prefer to run the components manually in separate terminals:
+## 🚀 Quick Start (Laptop)
 
-| Component | Shell Command | Notes |
-|-----------|---------------|-------|
-| **AI Bridge (Background)** | `cd ai-brain; python server.py` | Must be running first. |
-| **SIP System (Background)**| `cd phone-system; node sip_handler.js`| Connects the phone to the Brain. |
-| **Web Dashboard (UI)** | `cd frontend; npm run dev` | Launches the React interface. |
+### 1. Prerequisites
+- **Python 3.10+**
+- **Node.js 18+**
+- **[Ollama](https://ollama.com/)** (Downloaded and running with `llama3` or `mistral`)
 
----
-
-## ⚙️ Full Configuration (.env)
-| Variable | Description |
-|----------|-------------|
-| `OWNER_NAME` | Your name (so the AI knows who it works for). |
-| `SIP_URI` | Your SIP account address (e.g., `sip:user@domain.com`). |
-| `SIP_PASSWORD` | Your SIP account password. |
-| `SIP_REGISTRAR` | Your SIP provider's address (e.g., `wss://sip.domain.com:5063`). |
-| `STT_ENGINE` | `vosk` (fast) or `whisper` (accurate). |
-| `TTS_ENGINE` | `pyttsx3` (basic) or `coqui` (custom voice). |
+### 2. Launch Everything
+The project includes a master orchestration script. Simply open PowerShell and run:
+```powershell
+./start.ps1
+```
+This script will:
+1. Initialize the Python virtual environment.
+2. Start the AI Brain (FastAPI).
+3. Start the SIP Handler (Node.js).
+4. Launch the Web Dashboard.
 
 ---
 
-## 📂 Project Navigation
-- `/ai-brain`: Python Backend (AI & Logic).
-- `/phone-system`: Node.js Backend (SIP Telephony).
-- `/frontend`: React Frontend (Web UI).
-- `start.ps1`: The Master Startup Script.
+## 📱 Mobile App Setup
+
+The PAICA mobile app allows you to take your AI agent anywhere.
+
+1.  **Build the App**: Follow the [Mobile Tutorial](file:///c:/projects/AI-CALL_AGENT/mobile-app/tutorial.md) to build and install the app on your device.
+2.  **Download Models**: Use the **Models** tab in the app to download a small LLM (like Qwen 0.5B) for on-device processing.
+3.  **Bridge Connection**: Connect to your laptop's IP in the **Settings** tab to enable **Hybrid Mode** for faster, smarter responses.
+
+---
+
+## ⚙️ Configuration (.env)
+
+| Variable | Description | Default |
+| :--- | :--- | :--- |
+| `OWNER_NAME` | The name the AI uses to refer to you. | `User` |
+| `STT_ENGINE` | `vosk` (fast) or `whisper` (accurate). | `vosk` |
+| `TTS_ENGINE` | `pyttsx3` (basic) or `coqui` (cloned). | `pyttsx3` |
+| `VOICE_SAMPLE_PATH` | Path to your voice clone `.wav` file. | `./voice-clone/sample.wav` |
+| `SIP_URI` | Your SIP account address (for real calls). | `sip:user@domain.com` |
+
+---
+
+## 🤝 Contributing
+
+Contributions are welcome! Please feel free to submit a Pull Request.
+
+---
+
+## 📜 License
+
+MIT License - See [LICENSE](file:///c:/projects/AI-CALL_AGENT/LICENSE) for details. (Coming soon)
+
