@@ -207,6 +207,11 @@ class CallHandler {
     await ttsService.stop();
     this.setState('ended');
     this.addLog('system', 'Call ended');
+
+    // Save call to history
+    if (this._logs.length > 0) {
+      await historyService.addCall(this._personaId, [...this._logs]);
+    }
   }
 
   reset(): void {

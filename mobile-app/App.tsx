@@ -9,6 +9,7 @@ import { View, Text, StyleSheet } from 'react-native';
 import Dashboard from './src/screens/Dashboard';
 import ModelManager from './src/screens/ModelManager';
 import Settings from './src/screens/Settings';
+import CallHistory from './src/screens/CallHistory';
 import { THEME } from './src/constants/theme';
 
 const Tab = createBottomTabNavigator();
@@ -63,6 +64,13 @@ export default function App() {
           component={ModelManager}
           options={{
             tabBarIcon: ({ focused }) => <TabIcon label="🧠" focused={focused} />,
+          }}
+        />
+        <Tab.Screen
+          name="History"
+          component={CallHistory}
+          options={{
+            tabBarIcon: ({ focused }) => <TabIcon label="📜" focused={focused} />,
           }}
         />
         <Tab.Screen
