@@ -163,7 +163,7 @@ export default function Dashboard() {
       ? THEME.colors.accent
       : callState === 'processing' || callState === 'speaking'
       ? THEME.colors.warning
-      : callState === 'ringing'
+      : callState === 'screening'
       ? THEME.colors.primary
       : THEME.colors.textMuted;
 
@@ -175,7 +175,7 @@ export default function Dashboard() {
 
       {/* Header */}
       <View style={styles.header}>
-        <Text style={styles.title}>PAICA</Text>
+        <Text style={styles.title}>AURA</Text>
         <Text style={styles.subtitle}>Personal AI Call Agent</Text>
       </View>
 
@@ -212,6 +212,32 @@ export default function Dashboard() {
           {!isCallActive && <Text style={styles.tapToChange}>Tap to change</Text>}
         </View>
       </TouchableOpacity>
+      
+      {/* Screening Overlay */}
+      {callState === 'screening' && (
+        <Animated.View style={styles.screeningOverlay}>
+          <View style={styles.screeningCard}>
+            <Text style={styles.screeningTitle}>Incoming Call</Text>
+            <Text style={styles.screeningText}>Choose how you want to handle this interaction:</Text>
+            <View style={styles.screeningActions}>
+              <TouchableOpacity 
+                style={[styles.screenBtn, styles.screenBtnUser]} 
+                onPress={() => callHandler.userAnswer()}
+              >
+                <Text style={styles.screenBtnIcon}>👤</Text>
+                <Text style={styles.screenBtnText}>Answer Myself</Text>
+              </TouchableOpacity>
+              <TouchableOpacity 
+                style={[styles.screenBtn, styles.screenBtnAI]} 
+                onPress={() => callHandler.aiAnswer()}
+              >
+                <Text style={styles.screenBtnIcon}>🤖</Text>
+                <Text style={styles.screenBtnText}>Let AI Answer</Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </Animated.View>
+      )}
 
       {/* Call Button */}
       <TouchableOpacity
@@ -460,6 +486,70 @@ const styles = StyleSheet.create({
   modeText: {
     fontSize: THEME.font.size.xs,
     color: THEME.colors.textMuted,
+    textAlign: 'center',
+  },
+  // Screening
+  screeningOverlay: {
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0,0,0,0.8)',
+    justifyContent: 'center',
+    alignItems: 'center',
+    zIndex: 1000,
+  },
+  screeningCard: {
+    backgroundColor: THEME.colors.bgCard,
+    width: width - 40,
+    padding: THEME.spacing.lg,
+    borderRadius: THEME.radius.xl,
+    borderWidth: 1,
+    borderColor: THEME.colors.primary + '40',
+    alignItems: 'center',
+  },
+  screeningTitle: {
+    fontSize: THEME.font.size.xl,
+    fontWeight: THEME.font.weight.bold,
+    color: THEME.colors.primary,
+    marginBottom: THEME.spacing.sm,
+  },
+  screeningText: {
+    fontSize: THEME.font.size.md,
+    color: THEME.colors.textSecondary,
+    textAlign: 'center',
+    marginBottom: THEME.spacing.xl,
+  },
+  screeningActions: {
+    flexDirection: 'row',
+    gap: THEME.spacing.md,
+  },
+  screenBtn: {
+    flex: 1,
+    padding: THEME.spacing.md,
+    borderRadius: THEME.radius.lg,
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+  },
+  screenBtnUser: {
+    backgroundColor: THEME.colors.bg,
+    borderWidth: 1,
+    borderColor: THEME.colors.border,
+  },
+  screenBtnAI: {
+    backgroundColor: THEME.colors.primary + '20',
+    borderWidth: 1,
+    borderColor: THEME.colors.primary,
+  },
+  screenBtnIcon: {
+    fontSize: 24,
+  },
+  screenBtnText: {
+    fontSize: THEME.font.size.xs,
+    fontWeight: THEME.font.weight.bold,
+    color: THEME.colors.text,
     textAlign: 'center',
   },
 });
