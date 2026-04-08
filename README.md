@@ -7,7 +7,8 @@ AURA (Advanced Universal Real-time Assistant) is a state-of-the-art, 100% privat
 ## 🌟 Key Features
 
 *   **Mobile-First Intelligence**: Core AI inference and call logic run natively on your Android or iOS device using `llama.rn`.
-*   **$0 Operating Cost**: No API subscriptions (OpenAI, ElevenLabs, Twilio) required.
+*   **Smart Call Screening**: AURA catches incoming calls and asks if you want to answer or if the AI should handle it.
+*   **$0 Operating Cost**: No API subscriptions (OpenAI, ElevenLabs) required.
 *   **Hybrid Intelligence**: Seamlessly offload heavy reasoning tasks to your laptop bridge when connected to Wi-Fi for ultra-fast response times.
 *   **Privacy-First**: Audio and transcripts are processed on-device; the laptop only acts as a monitoring relay.
 *   **Voice Cloning**: Speak to callers in your own voice using Coqui XTTS-v2 cloning technology.
@@ -21,12 +22,12 @@ AURA is decentralized. Your phone handles the "Thinking," while your laptop prov
 
 ```mermaid
 graph TD
-    User((📞 Caller)) <--> SIP[SIP Provider / Linphone]
+    User((📞 Caller)) <--> SIP[Direct Connection / SIP]
     SIP <--> App[📱 AURA Mobile App]
     
     subgraph "Smartphone (The Brain)"
         App --- LlamaRN[llama.rn - Local LLM]
-        App --- Audio[Native Audio/STT]
+        App --- Audio[Native Audio / Screening]
     end
 
     subgraph "Laptop (Relay & Dashboard)"

@@ -19,9 +19,9 @@ AURA is designed with a **Mobile-First** philosophy. Unlike traditional AI assis
  │             │                  │  │  └ Native TTS       │  │   │
  │             │ SIP/WebRTC       │  └─────────────────────┘  │   │
  │  ┌──────────▼─────────┐        └────────────┬───────────────┘   │
- │  │  SIP Provider      │                     │                   │
- │  │  (linphone.org,    │         ┌───────────▼──────────┐        │
- │  │   sip.us, etc.)    │         │  Laptop Bridge       │        │
+ │  │  SIP Gateway       │                     │                   │
+ │  │  (Your Own SIP     │         ┌───────────▼──────────┐        │
+ │  │   Infrastructure)  │         │  Laptop Bridge       │        │
  │  └──────────┬─────────┘         │  (Optional Offload)  │        │
  └─────────────┼───────────────────────────────┬────────────────────┘
                │                               │
@@ -33,11 +33,14 @@ AURA is designed with a **Mobile-First** philosophy. Unlike traditional AI assis
 
 ## Data Flow (Mobile-First)
 
-1.  **Call Initiation**: `sip_service.ts` detects an incoming call and notifies `call_handler.ts`.
-2.  **Speech Capture**: The mobile microphone captures audio; Native STT converts it to text on-device.
-3.  **Local Reasoning**: `call_handler` passes the text to `ai_engine.ts` (`llama.rn`). The LLM generates a response using a local GGUF model.
-4.  **Voice Synthesis**: The text response is converted to speech via the phone's Native TTS.
-5.  **Relay Logging**: Every step of the process is synced to the **Laptop Relay** via `bridgeClient.sendLog()`, allowing real-time monitoring on the Web Dashboard.
+1.  **Call Detection**: `sip_service.ts` detects an incoming call event.
+2.  **Smart Screening**: `call_handler.ts` enters a `screening` state, notifying the user.
+3.  **User Decision**: The user chooses to "Answer Personally" or "Let AI Answer."
+4.  **AI Orchestration** (If AI Answer): 
+    - `call_handler` triggers `answerCall()`.
+    - Local LLM (`llama.rn`) generates a greeting.
+    - Native TTS speaks the greeting to the caller.
+5.  **Relay Logging**: Actions are synced to the Laptop Dashboard for monitoring.
 
 ## Performance Offloading (Hybrid Mode)
 
