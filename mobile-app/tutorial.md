@@ -29,15 +29,34 @@ npm install
 
 Because PAICA uses native modules (like `llama.rn` for local AI and `@react-native-voice/voice` for STT), it **cannot** run in the standard "Expo Go" app. You must build a custom development client.
 
-### Option A: Build for Android
-Run the following command to compile the app and install it on your connected device or emulator:
+### Option A: Build an APK online (EAS Build - No Android Studio required)
+If you do not have Android Studio installed on your computer, you can compile the `.apk` file using Expo's cloud build servers (EAS).
+
+1. Install the EAS CLI:
+   ```bash
+   npm install -g eas-cli
+   ```
+2. Log in to your Expo account (you can create one for free at expo.dev):
+   ```bash
+   eas login
+   ```
+3. Build the APK:
+   ```bash
+   eas build -p android --profile preview
+   ```
+4. Once the build finishes (takes about 10-15 minutes), EAS will provide a link to download the `.apk` file. Download and install it on your Android phone!
+
+*(Note: If EAS asks to set up the project automatically, say yes. If it asks to generate a new Android Keystore, say yes).*
+
+### Option B: Build locally via Android Studio (Mac/Windows/Linux)
+If you have Android Studio installed, run:
 ```bash
 npx expo run:android
 ```
 *   This will take several minutes the first time as it downloads Gradle and compiles the native code.
 *   The app will automatically launch on your device/emulator once finished.
 
-### Option B: Build for iOS (Mac Only)
+### Option C: Build for iOS (Mac Only)
 Run the following command to compile and launch on the iOS Simulator or connected device:
 ```bash
 npx expo run:ios
