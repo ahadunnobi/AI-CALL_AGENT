@@ -4,7 +4,7 @@
  * Uses llama.rn to run GGUF models directly on the phone.
  * Manages model lifecycle: download → load → infer → unload.
  */
-import * as FileSystem from 'expo-file-system';
+import * as FileSystem from 'expo-file-system/legacy';
 import { initLlama, LlamaContext } from 'llama.rn';
 import { MODELS, DEFAULT_MODEL_ID, ModelDefinition } from '../constants/models';
 

@@ -9,6 +9,7 @@ import { sttService } from './stt_service';
 import { ttsService } from './tts_service';
 import { bridgeClient } from './bridge_client';
 import { PERSONAS, DEFAULT_PERSONA_ID } from '../constants/personas';
+import { historyService } from './history_service';
 
 export type CallState = 'idle' | 'ringing' | 'active' | 'processing' | 'speaking' | 'ended';
 export type InferenceMode = 'local' | 'bridge' | 'auto';
