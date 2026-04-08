@@ -1,10 +1,10 @@
-# AI Call Agent — Architecture Overview
+# AURA — Architecture Overview
 
 ## System Architecture
 
 ```
  ┌──────────────────────────────────────────────────────────────────┐
- │                        Your Laptop                               │
+ │                        Your Laptop (AURA Core)                   │
  │                                                                  │
  │  ┌────────────────────┐        ┌────────────────────────────┐   │
  │  │   PHONE SYSTEM     │  HTTP  │      AI BRAIN              │   │
@@ -23,9 +23,12 @@
  │  │   sip.us, etc.)    │         │  Ollama (Local LLM)  │        │
  │  └──────────┬─────────┘         │  localhost:11434      │        │
  │             │                   └──────────────────────┘        │
- └─────────────┼────────────────────────────────────────────────────┘
-               │ PSTN / VoIP
-          📞 Caller
+ └─────────────┼───────────────────────────────▲────────────────────┘
+               │                               │
+               │ PSTN / VoIP                   │ HTTP (Hybrid Bridge)
+               │                               │
+          📞 Caller                     📱 AURA Mobile App
+                                         (llama.rn + Native STT)
 ```
 
 ## Data Flow (per conversational turn)
@@ -78,6 +81,13 @@ Caller speaks
 Caller hears response
 ```
 
+## Hybrid & Mobile Integration
+
+AURA supports a **Hybrid Intelligence** model where the mobile app can operate in two modes:
+
+1.  **Local Mode**: The mobile app uses `llama.rn` to run GGUF models (like Qwen 0.5B) directly on the phone's NPU/GPU. STT is handled via `@react-native-voice/voice`.
+2.  **Hybrid Mode**: The app transcribes speech locally but sends the text to the **Laptop AI Brain** via the bridge. This allows for faster response times and more sophisticated models (e.g., Llama 3 8B) that require laptop-class hardware.
+
 ## Component Summary
 
 | Component | File | Technology | Purpose |
@@ -92,3 +102,5 @@ Caller hears response
 | Caller Memory | `ai-brain/memory.py` | SQLite | Persistent caller context |
 | Config | `ai-brain/config.py` | python-dotenv | All settings |
 | Logger | `ai-brain/logger.py` | Python logging | Structured log output |
+| Mobile App | `mobile-app/` | React Native | Handheld AI assistant |
+| On-Device LLM | `mobile-app/src/services/ai_engine.ts` | llama.rn | Local inference on mobile |

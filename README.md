@@ -1,4 +1,4 @@
-# 🦾 AI Agent: PAICA (Personal AI Communication Agent)
+# 🦾 AI Agent: AURA (Advanced Universal Real-time Assistant)
 
 A state-of-the-art, 100% private, and local-first AI phone agent. It handles calls via SIP, processes speech using local LLMs, and responds with natural or cloned voices. Built for users who demand privacy and total control over their communication.
 
@@ -31,7 +31,7 @@ graph TD
         Dashboard[React Dashboard] --- Brain
     end
 
-    subgraph "Mobile (PAICA App)"
+    subgraph "Mobile (AURA App)"
         App[React Native App]
         App --- LlamaRN[llama.rn - On-Device LLM]
         App --- Audio[Native Audio/STT]
@@ -74,9 +74,9 @@ This script will:
 
 ## 📱 Mobile App Setup
 
-The PAICA mobile app allows you to take your AI agent anywhere.
+The AURA mobile app allows you to take your AI agent anywhere.
 
-1.  **Build the App**: Follow the [Mobile Tutorial](file:///c:/projects/AI-CALL_AGENT/mobile-app/tutorial.md) to build and install the app on your device.
+1.  **Build the App**: Follow the [Mobile Tutorial](./mobile-app/tutorial.md) to build and install the app on your device.
 2.  **Download Models**: Use the **Models** tab in the app to download a small LLM (like Qwen 0.5B) for on-device processing.
 3.  **Bridge Connection**: Connect to your laptop's IP in the **Settings** tab to enable **Hybrid Mode** for faster, smarter responses.
 
