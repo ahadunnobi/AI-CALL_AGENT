@@ -1,16 +1,24 @@
-# React + Vite
+# AURA Dashboard
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+The monitoring interface for the AURA (Advanced Universal Real-time Assistant) AI Call Agent.
 
-Currently, two official plugins are available:
+## Features
+- **Live Activity Feed**: Real-time transcripts of agent logic, STT results, and LLM thoughts.
+- **System Health**: Monitor connection status of the AI Brain and SIP Handler.
+- **Call History**: View past interactions and transcripts (Synced from SQLite memory).
+- **Configuration View**: Inspect current environmental settings.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Getting Started
+To run the dashboard locally:
 
-## React Compiler
+1.  Navigate to this folder: `cd frontend`
+2.  Install dependencies: `npm install`
+3.  Start the dev server: `npm run dev`
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+The dashboard will be available at [http://localhost:5173](http://localhost:5173).
 
-## Expanding the ESLint configuration
-
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+## Tech Stack
+- **Framework**: React 18
+- **Build Tool**: Vite
+- **Styling**: Vanilla CSS
+- **API**: Axios (Communicating with the Python FastAPI bridge)
