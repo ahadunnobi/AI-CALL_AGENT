@@ -1,6 +1,6 @@
-# PAICA Mobile App - Setup Tutorial
+# AURA Mobile App - Setup Tutorial
 
-This tutorial will guide you through setting up, building, and running the PAICA mobile app on your Android or iOS device.
+This tutorial will guide you through setting up, building, and running the AURA mobile app on your Android or iOS device.
 
 ## Prerequisites
 
@@ -27,7 +27,7 @@ npm install
 
 ## 2. Building the Development Client
 
-Because PAICA uses native modules (like `llama.rn` for local AI and `@react-native-voice/voice` for STT), it **cannot** run in the standard "Expo Go" app. You must build a custom development client.
+Because AURA uses native modules (like `llama.rn` for local AI and `@react-native-voice/voice` for STT), it **cannot** run in the standard "Expo Go" app. You must build a custom development client.
 
 ### Option A: Build an APK online (EAS Build - No Android Studio required)
 If you do not have Android Studio installed on your computer, you can compile the `.apk` file using Expo's cloud build servers (EAS).
@@ -76,9 +76,9 @@ Once the custom client is built and installed on your phone, you might need to s
 
 ## 4. Downloading the On-Device AI Model
 
-PAICA runs AI locally on your phone. To do this, it needs an AI model.
+AURA runs AI locally on your phone. To do this, it needs an AI model.
 
-1.  Open the PAICA app on your device.
+1.  Open the AURA app on your device.
 2.  Navigate to the **Models** tab (the brain icon 🧠).
 3.  You will see a list of available models (e.g., Qwen 0.5B, TinyLlama 1.1B).
 4.  Tap **Download** next to "Qwen 0.5B" (Recommended for speed).
@@ -87,11 +87,11 @@ PAICA runs AI locally on your phone. To do this, it needs an AI model.
 
 ## 5. Configuring Hybrid Mode (Optional)
 
-PAICA can offload processing to your laptop's AI Brain when connected to the same Wi-Fi network. This process is much faster and uses a smarter model.
+AURA can offload processing to your laptop's AI Brain when connected to the same Wi-Fi network. This process is much faster and uses a smarter model.
 
 1.  Ensure your laptop AI Brain is running (`start.ps1` in the main project folder).
 2.  Find your laptop's local IP address (e.g., `192.168.x.x`).
-3.  In the PAICA app, navigate to the **Settings** tab (the gear icon ⚙️).
+3.  In the AURA app, navigate to the **Settings** tab (the gear icon ⚙️).
 4.  Under **Laptop Bridge URL**, enter your laptop's IP address and port (e.g., `http://192.168.1.100:8000`).
 5.  Tap **Save** and then **Test Connection** to ensure the app can reach your laptop.
 6.  Select **Auto** or **Laptop Only** under Inference Mode.

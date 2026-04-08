@@ -1,8 +1,8 @@
-# AI Call Agent — Walkthrough & Proof of Work
+# AURA — Walkthrough & Proof of Work
 
 ## What Was Built
 
-A fully local, $0-cost AI phone agent at `c:\projects\AI-CALL_AGENT`.
+A fully local, $0-cost AI personal assistant and phone agent at `c:\projects\AI-CALL_AGENT`.
 
 ---
 
@@ -16,21 +16,19 @@ AI-CALL_AGENT/
 ├── ARCHITECTURE.md          ✅ System diagram + data flow
 │
 ├── ai-brain/                ── Python AI modules ──────────────────────────────
-│   ├── config.py            ✅ Typed config loader (.env → singleton)
-│   ├── logger.py            ✅ Coloured console + rotating file logger
-│   ├── memory.py            ✅ SQLite caller memory (upsert, logs, context)
-│   ├── speech_to_text.py    ✅ STT abstraction (Vosk default, Whisper fallback)
-│   ├── ai_brain.py          ✅ Ollama LLM with per-call history + persona
-│   ├── voice_synthesis.py   ✅ TTS abstraction (pyttsx3 default, Coqui cloning)
-│   ├── call_processor.py    ✅ Full STT→Memory→LLM→TTS pipeline
-│   ├── server.py            ✅ FastAPI bridge with 5 endpoints
-│   ├── requirements.txt     ✅ All Python dependencies
-│   └── models/README.md     ✅ Vosk model download instructions
+│   ├── ...                  ✅ STT, LLM (Ollama), TTS, SQLite Memory, FastAPI
+│
+├── mobile-app/              ── React Native App ───────────────────────────────
+│   ├── App.tsx              ✅ Main application logic
+│   ├── src/services/        ✅ On-device AI (llama.rn) & Hybrid Bridge
+│   └── tutorial.md          ✅ Build & setup guide
 │
 ├── phone-system/            ── Node.js SIP layer ───────────────────────────────
-│   ├── sip_handler.js       ✅ SIP.js UA, inbound call handling, demo mode
-│   ├── bridge_client.js     ✅ Axios HTTP client → FastAPI
-│   └── package.json         ✅ Node.js dependencies
+│   ├── sip_handler.js       ✅ SIP.js UA, inbound call handling
+│   └── bridge_client.js     ✅ Axios HTTP client → FastAPI
+│
+├── frontend/                ── Monitoring ──────────────────────────────────────
+│   └── ...                  ✅ React Dashboard for live logs
 │
 └── voice-clone/
     └── README.md            ✅ Voice recording guide for Coqui XTTS-v2
@@ -40,53 +38,20 @@ AI-CALL_AGENT/
 
 ## Component Highlights
 
-### Python AI Pipeline (`ai-brain/`)
-- **`config.py`**: Singleton `cfg` object loaded from `.env`, with typed defaults for every setting
-- **`speech_to_text.py`**: `VoskSTT` + `WhisperSTT` sharing a common `BaseSTT` interface; switchable via `STT_ENGINE` env var
-- **`ai_brain.py`**: `OllamaLLM` with rolling conversation history per call and graceful error handling (returns a polite fallback if Ollama is down)
-- **`voice_synthesis.py`**: `Pyttsx3TTS` (zero-download, default) and `CoquiTTS` (neural voice cloning from `.wav` sample); cross-platform WAV playback
-- **`memory.py`**: Full SQLite schema with `callers` and `call_logs` tables; `build_context_summary()` formats caller history into a single LLM-ready string
-- **`call_processor.py`**: Stateful per-call orchestrator with `start_call()`, `process_turn()`, `end_call()`, and `get_greeting_audio()`
-- **`server.py`**: FastAPI app with `/health`, `/call/start`, `/call/greeting`, `/call/turn`, `/call/end`; audio transferred as base64 WAV
+### AURA Core (Laptop/Python)
+- **`ai_brain.py`**: `OllamaLLM` with rolling conversation history per call and persona-driven responses.
+- **`memory.py`**: SQLite database managing `callers` and `call_logs`.
+- **`voice_synthesis.py`**: Supports `Pyttsx3` and `Coqui` voice cloning.
+- **`server.py`**: Serving as the **Hybrid Bridge** for mobile app offloading.
 
-### Node.js SIP Layer (`phone-system/`)
-- **`sip_handler.js`**: Full SIP.js user agent with registration, inbound invite handling, and **demo mode** (runs full pipeline without real SIP creds)
-- **`bridge_client.js`**: Clean Axios wrapper for all Python endpoints
+### AURA Mobile
+- **Local AI**: Integrated `llama.rn` for running GGUF models on-device.
+- **Native Voice**: Using `@react-native-voice/voice` for high-performance STT.
+- **Hybrid Bridge**: Connects to the laptop over Wi-Fi to use larger models (8B+) for complex requests.
 
-### Startup & Config
-- **`start.ps1`**: Pre-flight checks, auto-installs deps on first run, launches all 3 services with coloured status output, cleans up PIDs on Ctrl+C
-- **`.env.example`**: 36-variable template with inline documentation
-
----
-
-## How to Run
-
-### Step 1 — Prerequisites
-```powershell
-# Install from:
-# Python 3.10+  → https://python.org
-# Node.js 18+   → https://nodejs.org
-# Ollama        → https://ollama.com
-ollama pull mistral
-```
-
-### Step 2 — Vosk Model
-Download and extract to `ai-brain/models/vosk-model-small-en-us-0.15/`:
-https://alphacephei.com/vosk/models/vosk-model-small-en-us-0.15.zip
-
-### Step 3 — Configure
-```powershell
-Copy-Item .env.example .env
-# Edit .env — set OWNER_NAME at minimum
-```
-
-### Step 4 — Start
-```powershell
-powershell -ExecutionPolicy Bypass -File start.ps1
-```
-
-### Step 5 — Test (No SIP Account Needed)
-Navigate to `http://localhost:8000/docs` — the Swagger UI lets you call every endpoint interactively.
+### SIP Telephony
+- Handles real PSTN calls via standard SIP protocols.
+- Includes a **Demo Mode** for testing without a SIP account.
 
 ---
 
@@ -95,9 +60,9 @@ Navigate to `http://localhost:8000/docs` — the Swagger UI lets you call every 
 | Component | Tool | Cost |
 |-----------|------|------|
 | Telephony | SIP.js + free SIP provider | $0 |
-| STT | Vosk (offline, ~50 MB model) | $0 |
-| LLM | Ollama + Mistral (~4 GB) | $0 |
-| TTS | pyttsx3 (no download) | $0 |
-| Voice Cloning | Coqui XTTS-v2 (optional, ~1.8 GB) | $0 |
+| STT | Vosk / Whisper / @react-native-voice | $0 |
+| LLM (Laptop) | Ollama + Mistral / Llama 3 | $0 |
+| LLM (Mobile) | llama.rn + Qwen / TinyLlama | $0 |
+| TTS | pyttsx3 / Coqui XTTS-v2 | $0 |
 | Memory | SQLite | $0 |
 | **Total** | | **$0** |
