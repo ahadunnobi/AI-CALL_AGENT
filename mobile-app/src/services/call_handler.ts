@@ -12,7 +12,7 @@ import { PERSONAS, DEFAULT_PERSONA_ID } from '../constants/personas';
 import { historyService } from './history_service';
 import { sipService } from './sip_service';
 
-export type CallState = 'idle' | 'ringing' | 'active' | 'processing' | 'speaking' | 'ended';
+export type CallState = 'idle' | 'ringing' | 'screening' | 'active' | 'processing' | 'speaking' | 'ended';
 export type InferenceMode = 'local' | 'bridge' | 'auto';
 
 export interface CallLog {
@@ -37,16 +37,8 @@ class CallHandler {
     sipService.connect();
 
     sipService.onIncomingCall(async () => {
-      this.setState('ringing');
-      this.addLog('system', 'Incoming SIP call ringing...');
-      
-      try {
-        await sipService.answerCall();
-        this.addLog('system', 'SIP call auto-answered');
-        await this.startCall();
-      } catch (err) {
-        this.addLog('system', 'Failed to answer SIP call');
-      }
+      this.setState('screening');
+      this.addLog('system', 'Incoming call detected. Screen or answer?');
     });
   }
 
@@ -147,6 +139,32 @@ class CallHandler {
 
     // Start listening
     this.startListening();
+  }
+
+  // --- Screening Actions ---
+
+  async aiAnswer(): Promise<void> {
+    this.addLog('system', 'User selected: Let AI Answer');
+    try {
+      await sipService.answerCall();
+      await this.startCall();
+    } catch (err) {
+      this.addLog('system', 'Failed to answer call for AI');
+    }
+  }
+
+  async userAnswer(): Promise<void> {
+    this.addLog('system', 'User selected: I\'ll Answer Personally');
+    try {
+      await sipService.answerCall();
+      this.setState('active');
+      this.addLog('system', 'User is now talking. AI is monitoring.');
+      // Monitor but don't respond automatically unless requested?
+      // For now, we just enter active state and listen.
+      this.startListening();
+    } catch (err) {
+      this.addLog('system', 'Failed to answer call');
+    }
   }
 
   private startListening(): void {
