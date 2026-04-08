@@ -17,6 +17,7 @@ import {
 import { THEME } from '../constants/theme';
 import { aiEngine, AIStatus } from '../services/ai_engine';
 import { callHandler, CallState, CallLog } from '../services/call_handler';
+import { PERSONAS } from '../constants/personas';
 
 const { width } = Dimensions.get('window');
 
@@ -110,6 +111,7 @@ export default function Dashboard() {
   const [aiStatus, setAiStatus] = useState<AIStatus>(aiEngine.status);
   const [callState, setCallState] = useState<CallState>(callHandler.state);
   const [logs, setLogs] = useState<CallLog[]>([]);
+  const [personaId, setPersonaId] = useState<string>(callHandler.personaId);
   const scrollRef = useRef<ScrollView>(null);
 
   useEffect(() => {
@@ -137,6 +139,14 @@ export default function Dashboard() {
     }
   }, [callState]);
 
+  const togglePersona = useCallback(() => {
+    const currentIndex = PERSONAS.findIndex((p) => p.id === personaId);
+    const nextIndex = (currentIndex + 1) % PERSONAS.length;
+    const nextPersona = PERSONAS[nextIndex];
+    setPersonaId(nextPersona.id);
+    callHandler.personaId = nextPersona.id;
+  }, [personaId]);
+
   const isCallActive = !['idle', 'ended'].includes(callState);
 
   const aiStatusColor =
@@ -156,6 +166,8 @@ export default function Dashboard() {
       : callState === 'ringing'
       ? THEME.colors.primary
       : THEME.colors.textMuted;
+
+  const currentPersonaName = PERSONAS.find((p) => p.id === personaId)?.name || 'Unknown';
 
   return (
     <View style={styles.container}>
@@ -186,6 +198,20 @@ export default function Dashboard() {
           />
         </View>
       </View>
+
+      {/* Persona Selector */}
+      <TouchableOpacity
+        style={styles.personaCard}
+        onPress={togglePersona}
+        disabled={isCallActive}
+        activeOpacity={0.7}
+      >
+        <Text style={styles.statusLabel}>Active Persona</Text>
+        <View style={{ flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Text style={styles.personaText}>🎭 {currentPersonaName}</Text>
+          {!isCallActive && <Text style={styles.tapToChange}>Tap to change</Text>}
+        </View>
+      </TouchableOpacity>
 
       {/* Call Button */}
       <TouchableOpacity
@@ -307,6 +333,26 @@ const styles = StyleSheet.create({
     fontSize: THEME.font.size.xs,
     fontWeight: THEME.font.weight.bold,
     letterSpacing: 0.5,
+  },
+  // Persona Selector
+  personaCard: {
+    backgroundColor: THEME.colors.bgCard,
+    marginHorizontal: THEME.spacing.lg,
+    padding: THEME.spacing.md,
+    borderRadius: THEME.radius.lg,
+    borderWidth: 1,
+    borderColor: THEME.colors.border,
+    marginBottom: THEME.spacing.lg,
+  },
+  personaText: {
+    fontSize: THEME.font.size.lg,
+    fontWeight: THEME.font.weight.bold,
+    color: THEME.colors.text,
+  },
+  tapToChange: {
+    fontSize: THEME.font.size.xs,
+    color: THEME.colors.textMuted,
+    fontStyle: 'italic',
   },
   // Call Button
   callButton: {
