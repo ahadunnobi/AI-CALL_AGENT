@@ -8,6 +8,7 @@ import { aiEngine } from './ai_engine';
 import { sttService } from './stt_service';
 import { ttsService } from './tts_service';
 import { bridgeClient } from './bridge_client';
+import { PERSONAS, DEFAULT_PERSONA_ID } from '../constants/personas';
 
 export type CallState = 'idle' | 'ringing' | 'active' | 'processing' | 'speaking' | 'ended';
 export type InferenceMode = 'local' | 'bridge' | 'auto';
@@ -25,13 +26,22 @@ class CallHandler {
   private _state: CallState = 'idle';
   private _mode: InferenceMode = 'auto';
   private _logs: CallLog[] = [];
+  private _personaId: string = DEFAULT_PERSONA_ID;
   private stateListeners: CallStateListener[] = [];
   private logListeners: LogListener[] = [];
 
-  private systemPrompt =
-    "You are a professional personal assistant for Ahad. " +
-    "You answer calls on their behalf, take messages, provide information, " +
-    "and assist callers politely and concisely. Keep responses under 2 sentences.";
+  get systemPrompt(): string {
+    const persona = PERSONAS.find(p => p.id === this._personaId);
+    return persona ? persona.systemPrompt : PERSONAS[0].systemPrompt;
+  }
+
+  get personaId(): string {
+    return this._personaId;
+  }
+
+  set personaId(id: string) {
+    this._personaId = id;
+  }
 
   get state(): CallState {
     return this._state;
