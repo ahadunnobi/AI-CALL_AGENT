@@ -1,16 +1,19 @@
 """
-server.py — FastAPI bridge server.
+server.py — AURA Performance Bridge & Dashboard Relay.
 
-The Node.js SIP layer (sip_handler.js) communicates with the Python AI modules
-via HTTP to this server. Audio is transferred as base64-encoded WAV.
+This server acts as a performance offloader for the AURA Mobile App and a
+relay for the Web Dashboard. It provides high-performance AI inference and 
+streams logs from the mobile device to the web interface.
 
 Endpoints:
   GET  /health              — liveness check
-  POST /call/start          — initialise a new call session
-  POST /call/turn           — process one speech turn (STT → LLM → TTS)
-  POST /call/end            — finalise call and save transcript
-  POST /call/greeting       — get opening greeting audio
+  POST /mobile/log          — sync logs from mobile device to dashboard
+  POST /call/start          — initiate a bridge call session
+  POST /call/turn           — process one bridge turn (Laptop STT/LLM/TTS)
+  POST /call/end            — finalize bridge session
+  POST /call/greeting       — get high-perf greeting audio
 """
+import logging
 import uvicorn
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, HTTPException
@@ -51,9 +54,9 @@ async def lifespan(app: FastAPI):
 
 
 app = FastAPI(
-    title="AI Call Agent — Python Bridge",
-    version="1.0.0",
-    description="FastAPI server bridging the Node.js SIP layer with Python AI modules.",
+    title="AURA — Performance Bridge",
+    version="1.1.0",
+    description="Performance offloader and dashboard relay for the AURA Mobile-First ecosystem.",
     lifespan=lifespan,
 )
 
@@ -83,6 +86,12 @@ class EndCallRequest(BaseModel):
     phone: str
 
 
+class LogRequest(BaseModel):
+    level: str
+    message: str
+    name: Optional[str] = "mobile-app"
+
+
 class AudioResponse(BaseModel):
     audio_b64: str
     text: str
@@ -92,7 +101,21 @@ class AudioResponse(BaseModel):
 
 @app.get("/health")
 async def health():
-    return {"status": "ok", "active_sessions": len(_sessions)}
+    return {
+        "status": "ok", 
+        "role": "Performance Bridge & Dashboard Relay",
+        "active_bridge_sessions": len(_sessions)
+    }
+
+
+@app.post("/mobile/log")
+async def mobile_log(req: LogRequest):
+    """Sync a log entry from the mobile app to the dashboard."""
+    level_num = getattr(logging, req.level.upper(), logging.INFO)
+    # Inject directly into the logger which pushes to log_queue
+    logger = get_logger(req.name)
+    logger.log(level_num, req.message)
+    return {"status": "synced"}
 
 
 @app.post("/call/start")

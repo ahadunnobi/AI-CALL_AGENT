@@ -1,106 +1,56 @@
-# AURA — Architecture Overview
+# AURA — Mobile-First Architecture
+
+AURA is designed with a **Mobile-First** philosophy. Unlike traditional AI assistants that rely on cloud or laptop processing, AURA places the "Brain" directly in your hand.
 
 ## System Architecture
 
 ```
  ┌──────────────────────────────────────────────────────────────────┐
- │                        Your Laptop (AURA Core)                   │
+ │                        Your Smartphone (AURA Brain)              │
  │                                                                  │
  │  ┌────────────────────┐        ┌────────────────────────────┐   │
- │  │   PHONE SYSTEM     │  HTTP  │      AI BRAIN              │   │
- │  │   (Node.js)        │◄──────►│      (Python FastAPI)      │   │
+ │  │   TELEPHONY        │        │      AI ORCHESTRATOR       │   │
+ │  │   (sip_service.ts) │◄──────►│      (call_handler.ts)     │   │
  │  │                    │        │                            │   │
- │  │  sip_handler.js    │        │  ┌─────────────────────┐  │   │
- │  │  ├ SIP.js UA       │        │  │  call_processor.py  │  │   │
- │  │  └ bridge_client   │        │  │  ├ speech_to_text   │  │   │
- │  │                    │        │  │  ├ ai_brain (LLM)   │  │   │
- │  └──────────┬─────────┘        │  │  ├ voice_synthesis  │  │   │
- │             │ SIP/WebRTC       │  │  └ memory (SQLite)  │  │   │
- │             │                  │  └─────────────────────┘  │   │
+ │  │  Inbound/Outbound  │        │  ┌─────────────────────┐  │   │
+ │  │  Call Management   │        │  │  Local Inference    │  │   │
+ │  │                    │        │  │  ├ llama.rn (LLM)   │  │   │
+ │  └──────────┬─────────┘        │  │  ├ Native STT       │  │   │
+ │             │                  │  │  └ Native TTS       │  │   │
+ │             │ SIP/WebRTC       │  └─────────────────────┘  │   │
  │  ┌──────────▼─────────┐        └────────────┬───────────────┘   │
  │  │  SIP Provider      │                     │                   │
  │  │  (linphone.org,    │         ┌───────────▼──────────┐        │
- │  │   sip.us, etc.)    │         │  Ollama (Local LLM)  │        │
- │  └──────────┬─────────┘         │  localhost:11434      │        │
- │             │                   └──────────────────────┘        │
- └─────────────┼───────────────────────────────▲────────────────────┘
+ │  │   sip.us, etc.)    │         │  Laptop Bridge       │        │
+ │  └──────────┬─────────┘         │  (Optional Offload)  │        │
+ └─────────────┼───────────────────────────────┬────────────────────┘
                │                               │
-               │ PSTN / VoIP                   │ HTTP (Hybrid Bridge)
+               │ PSTN / VoIP                   │ HTTP / SSE (Relay)
                │                               │
-          📞 Caller                     📱 AURA Mobile App
-                                         (llama.rn + Native STT)
+          📞 Caller                     💻 Web Dashboard
+                                         (Monitoring Only)
 ```
 
-## Data Flow (per conversational turn)
+## Data Flow (Mobile-First)
 
-```
-Caller speaks
-    │
-    ▼
-[SIP Handler - Node.js]
- ├─ Receives audio stream from SIP/WebRTC
- └─ POSTs base64 WAV to POST /call/turn
-         │
-         ▼
-[FastAPI Server - Python]
- └─ Calls CallProcessor.process_turn()
-         │
-    ┌────┴──────────────────────────────────┐
-    │                                       │
-    ▼                                       │
-[speech_to_text.py]                        │
- └─ Vosk/Whisper → plain text              │
-         │                                 │
-    ┌────┴──────────────────────────────────┤
-    │                                       │
-    ▼                                       │
-[memory.py]                                │
- └─ SQLite lookup → caller context         │
-         │                                 │
-    ┌────┴──────────────────────────────────┤
-    │                                       │
-    ▼                                       │
-[ai_brain.py]                              │
- └─ Ollama API → response text             │
-         │                                 │
-    ┌────┴──────────────────────────────────┤
-    │
-    ▼
-[voice_synthesis.py]
- └─ pyttsx3/Coqui → WAV bytes
-         │
-         ▼
-[FastAPI Server]
- └─ Returns {audio_b64, text} to Node.js
-         │
-         ▼
-[SIP Handler - Node.js]
- └─ Plays WAV audio back to caller
-         │
-         ▼
-Caller hears response
-```
+1.  **Call Initiation**: `sip_service.ts` detects an incoming call and notifies `call_handler.ts`.
+2.  **Speech Capture**: The mobile microphone captures audio; Native STT converts it to text on-device.
+3.  **Local Reasoning**: `call_handler` passes the text to `ai_engine.ts` (`llama.rn`). The LLM generates a response using a local GGUF model.
+4.  **Voice Synthesis**: The text response is converted to speech via the phone's Native TTS.
+5.  **Relay Logging**: Every step of the process is synced to the **Laptop Relay** via `bridgeClient.sendLog()`, allowing real-time monitoring on the Web Dashboard.
 
-## Hybrid & Mobile Integration
+## Performance Offloading (Hybrid Mode)
 
-AURA supports a **Hybrid Intelligence** model where the mobile app can operate in two modes:
-
-1.  **Local Mode**: The mobile app uses `llama.rn` to run GGUF models (like Qwen 0.5B) directly on the phone's NPU/GPU. STT is handled via `@react-native-voice/voice`.
-2.  **Hybrid Mode**: The app transcribes speech locally but sends the text to the **Laptop AI Brain** via the bridge. This allows for faster response times and more sophisticated models (e.g., Llama 3 8B) that require laptop-class hardware.
+While the Mobile App is the primary brain, it can optionally offload heavy tasks to the laptop:
+- **High-Perf LLM**: If the laptop is available, the app can use larger models (e.g., Llama 3 8B) via the bridge.
+- **Voice Cloning**: Complex TTS (like Coqui XTTS) is handled by the laptop offloader.
 
 ## Component Summary
 
-| Component | File | Technology | Purpose |
-|-----------|------|------------|---------|
-| SIP Handler | `phone-system/sip_handler.js` | SIP.js | Receive/send phone calls |
-| HTTP Bridge | `phone-system/bridge_client.js` | Axios | JS → Python communication |
-| FastAPI Server | `ai-brain/server.py` | FastAPI | REST API bridge |
-| Call Orchestrator | `ai-brain/call_processor.py` | Python | Pipeline coordination |
-| Speech-to-Text | `ai-brain/speech_to_text.py` | Vosk / Whisper | Audio → text |
-| AI Brain | `ai-brain/ai_brain.py` | Ollama REST | LLM conversation |
-| Voice Synthesis | `ai-brain/voice_synthesis.py` | pyttsx3 / Coqui | Text → speech |
-| Caller Memory | `ai-brain/memory.py` | SQLite | Persistent caller context |
-| Config | `ai-brain/config.py` | python-dotenv | All settings |
-| Logger | `ai-brain/logger.py` | Python logging | Structured log output |
-| Mobile App | `mobile-app/` | React Native | Handheld AI assistant |
-| On-Device LLM | `mobile-app/src/services/ai_engine.ts` | llama.rn | Local inference on mobile |
+| Component | Role | Technology | Location |
+|-----------|------|------------|----------|
+| **Brain** | Call Orchestration | TypeScript | Mobile |
+| **STT** | Speech-to-Text | Native API | Mobile |
+| **LLM** | Local Reasoning | llama.rn (GGUF) | Mobile |
+| **Relay** | Dashboard Backend | Python (FastAPI) | Laptop |
+| **UI** | Live Monitor | React / Vite | Web Browser |

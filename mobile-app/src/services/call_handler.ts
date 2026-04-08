@@ -101,9 +101,13 @@ class CallHandler {
   }
 
   private addLog(role: CallLog['role'], text: string) {
-    const log: CallLog = { timestamp: Date.now(), role, text };
-    this._logs.push(log);
-    this.logListeners.forEach((fn) => fn(log));
+    const logEntry: CallLog = { timestamp: Date.now(), role, text };
+    this._logs.push(logEntry);
+    this.logListeners.forEach((fn) => fn(logEntry));
+
+    // Sync to laptop dashboard if bridge is available
+    const level = role === 'system' ? 'INFO' : 'DEBUG';
+    bridgeClient.sendLog(level, `[${role.toUpperCase()}] ${text}`);
   }
 
   // --- Inference Mode Selection ---

@@ -1,68 +1,55 @@
-# AURA — Walkthrough & Proof of Work
+# AURA — Mobile-First Walkthrough & Proof of Work
 
-## What Was Built
+## The Mobile-First Pivot
 
-A fully local, $0-cost AI personal assistant and phone agent at `c:\projects\AI-CALL_AGENT`.
+AURA has been redesigned to run entirely from your smartphone. While a laptop bridge is supported for "Hybrid Mode," the primary brain now lives on-device.
 
 ---
 
-## Project Structure (Fully Created)
+## Project Structure (Modernized)
 
 ```
-AI-CALL_AGENT/
-├── .env.example             ✅ Config template (36 documented variables)
-├── start.ps1                ✅ One-click Windows startup script
-├── README.md                ✅ Full setup & usage guide
-├── ARCHITECTURE.md          ✅ System diagram + data flow
+AURA/
+├── mobile-app/              ── THE BRAIN (On-Device) ──────────────────────────
+│   ├── src/services/        
+│   │   ├── ai_engine.ts     ✅ llama.rn (Local GGUF inference)
+│   │   ├── sip_service.ts   ✅ On-device SIP call management
+│   │   ├── call_handler.ts  ✅ Full local orchestration & log syncing
+│   │   └── bridge_client.ts ✅ WiFi sync to laptop dashboard
+│   └── tutorial.md          ✅ Setup guide for Android/iOS
 │
-├── ai-brain/                ── Python AI modules ──────────────────────────────
-│   ├── ...                  ✅ STT, LLM (Ollama), TTS, SQLite Memory, FastAPI
+├── ai-brain/                ── THE RELAY (Laptop) ─────────────────────────────
+│   ├── server.py            ✅ Log sync server & Performance Bridge
+│   └── logger.py            ✅ Relay to web dashboard
 │
-├── mobile-app/              ── React Native App ───────────────────────────────
-│   ├── App.tsx              ✅ Main application logic
-│   ├── src/services/        ✅ On-device AI (llama.rn) & Hybrid Bridge
-│   └── tutorial.md          ✅ Build & setup guide
+├── frontend/                ── THE MONITOR (Web) ──────────────────────────────
+│   └── App.jsx              ✅ Real-time mobile activity stream
 │
-├── phone-system/            ── Node.js SIP layer ───────────────────────────────
-│   ├── sip_handler.js       ✅ SIP.js UA, inbound call handling
-│   └── bridge_client.js     ✅ Axios HTTP client → FastAPI
-│
-├── frontend/                ── Monitoring ──────────────────────────────────────
-│   └── ...                  ✅ React Dashboard for live logs
-│
-└── voice-clone/
-    └── README.md            ✅ Voice recording guide for Coqui XTTS-v2
+└── start.ps1                ✅ Start laptop dashboard & relay
 ```
 
 ---
 
 ## Component Highlights
 
-### AURA Core (Laptop/Python)
-- **`ai_brain.py`**: `OllamaLLM` with rolling conversation history per call and persona-driven responses.
-- **`memory.py`**: SQLite database managing `callers` and `call_logs`.
-- **`voice_synthesis.py`**: Supports `Pyttsx3` and `Coqui` voice cloning.
-- **`server.py`**: Serving as the **Hybrid Bridge** for mobile app offloading.
+### Mobile Brain (`mobile-app/`)
+- **Native STT/TTS**: Uses the phone's native speech APIs for zero-latency interaction.
+- **On-Device LLM**: Runs quantized GGUF models (e.g., Qwen 1.5B) directly on the phone's hardware.
+- **Real-Time Sync**: Every action (STT result, LLM thought, TTS start) is sent via HTTPS to the laptop relay to populate the web dashboard correctly.
 
-### AURA Mobile
-- **Local AI**: Integrated `llama.rn` for running GGUF models on-device.
-- **Native Voice**: Using `@react-native-voice/voice` for high-performance STT.
-- **Hybrid Bridge**: Connects to the laptop over Wi-Fi to use larger models (8B+) for complex requests.
-
-### SIP Telephony
-- Handles real PSTN calls via standard SIP protocols.
-- Includes a **Demo Mode** for testing without a SIP account.
+### Laptop Relay (`ai-brain/server.py`)
+- **`POST /mobile/log`**: New endpoint that enables the mobile app to push its internal logs to the global laptop log queue.
+- **Relay Role**: No longer processes calls by default; instead, it provides a "Performance Bridge" if the mobile app requests higher-tier models.
 
 ---
 
-## Tech Stack (All Free)
+## Tech Stack (AURA Mobile-First)
 
-| Component | Tool | Cost |
-|-----------|------|------|
-| Telephony | SIP.js + free SIP provider | $0 |
-| STT | Vosk / Whisper / @react-native-voice | $0 |
-| LLM (Laptop) | Ollama + Mistral / Llama 3 | $0 |
-| LLM (Mobile) | llama.rn + Qwen / TinyLlama | $0 |
-| TTS | pyttsx3 / Coqui XTTS-v2 | $0 |
-| Memory | SQLite | $0 |
-| **Total** | | **$0** |
+| Component    | Tool                      | Location | Cost |
+| :----------- | :------------------------ | :------- | :--- |
+| Telephony    | On-device SIP Service     | Mobile   | $0   |
+| STT / TTS    | Native Mobile APIs        | Mobile   | $0   |
+| AI Brain     | llama.rn (Local LLM)      | Mobile   | $0   |
+| Dashboard    | React + FastAPI Relay     | Laptop   | $0   |
+| Memory       | Local SQLite Service      | Mobile   | $0   |
+| **Total**    |                           |          | **$0** |

@@ -77,6 +77,15 @@ class BridgeClient {
     const res = await this.client.post<TurnResult>('/call/greeting', { phone });
     return res.data;
   }
+
+  async sendLog(level: string, message: string, name: string = 'mobile-app'): Promise<void> {
+    if (!this._available) return;
+    try {
+      await this.client.post('/mobile/log', { level, message, name });
+    } catch (err) {
+      console.error('Failed to sync log to bridge:', err);
+    }
+  }
 }
 
 export const bridgeClient = new BridgeClient();

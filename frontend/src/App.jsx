@@ -56,8 +56,8 @@ function App() {
             <Activity color="white" size={24} />
           </div>
           <div style={{ display: 'flex', flexDirection: 'column' }}>
-            <h1>AI Call Agent</h1>
-            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>LOCAL INTELLIGENCE HUB</span>
+            <h1>AURA Dashboard</h1>
+            <span style={{ fontSize: '0.75rem', color: 'var(--text-secondary)', fontWeight: 500 }}>MOBILE ACTIVITY MONITOR</span>
           </div>
         </motion.div>
 
@@ -125,7 +125,7 @@ function App() {
       </main>
 
       <footer style={{ marginTop: '2.5rem', textAlign: 'center', color: 'var(--text-secondary)', fontSize: '0.75rem', borderTop: '1px solid var(--border-color)', paddingTop: '1.5rem' }}>
-        AI Call Agent • Powered by ElevenLabs, Ollama & FastAPI
+        AURA Mobile-First AI • Powered by llama.rn & FastAPI
       </footer>
     </div>
   );
